@@ -143,11 +143,11 @@
     transition: transform .32s ease, opacity .32s ease, filter .32s ease;
   }
   .boot-entry[data-age="0"] { opacity: 1; filter: none; }
-  .boot-entry[data-age="1"] { opacity: .48; filter: blur(.65px); }
-  .boot-entry[data-age="2"] { opacity: .3; filter: blur(1px); }
-  .boot-entry[data-age="3"] { opacity: .18; filter: blur(1.35px); }
-  .boot-entry[data-age="4"] { opacity: .1; filter: blur(1.7px); }
-  .boot-entry[data-age="5"] { opacity: .05; filter: blur(2px); }
+  .boot-entry[data-age="1"],
+  .boot-entry[data-age="2"] { opacity: 1; filter: none; }
+  .boot-entry[data-age="3"] { opacity: .65; filter: blur(.8px); }
+  .boot-entry[data-age="4"] { opacity: .35; filter: blur(1.4px); }
+  .boot-entry[data-age="5"] { opacity: .15; filter: blur(2px); }
 
   /* ============ STATUS BAR ============ */
   .live-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--em); animation: blink 1.7s ease-in-out infinite; }
@@ -879,7 +879,7 @@
         const age = all.length - index - 1;
         line.dataset.age = String(age);
         line.hidden = age > 5;
-        line.style.transform = `translateY(calc(-50% - ${age * 1.65}em)) scale(${Math.max(.72, 1 - age * .055)})`;
+        line.style.transform = `translateY(calc(-50% - ${age * 1.65}em))`;
       });
       i++;
       if (i >= lines.length) { clearInterval(t); setTimeout(() => ov.classList.add('off'), 380); setTimeout(() => ov.remove(), 1000); }
