@@ -146,9 +146,9 @@
     border: 1px solid transparent; transition: all .25s ease; white-space: nowrap;
   }
   .nav-stage .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--dim); transition: all .25s ease; }
-  .nav-stage:hover { color: var(--tx); }
-  .nav-stage.active { color: var(--cy); border-color: rgba(34,211,238,.4); background: rgba(34,211,238,.07); box-shadow: 0 0 20px -4px rgba(34,211,238,.35); }
-  .nav-stage.active .dot { background: var(--cy); box-shadow: 0 0 8px var(--cy); }
+  .nav-stage:hover { color: var(--em); }
+  .nav-stage.active { color: var(--em); border-color: rgba(52,211,153,.5); background: rgba(52,211,153,.1); box-shadow: 0 0 20px -4px rgba(52,211,153,.4); }
+  .nav-stage.active .dot { background: var(--em); box-shadow: 0 0 8px var(--em); }
   .nav-stage.done { color: var(--em); }
   .nav-stage.done .dot { background: var(--em); box-shadow: 0 0 6px var(--em); }
   .nav-arrow { color: var(--dim); font-size: 10px; }
@@ -282,7 +282,7 @@
 <div class="fx" aria-hidden="true"></div>
 
 <!-- ================= STATUS BAR + NAV ================= -->
-<header class="fixed top-0 inset-x-0 z-50 border-b border-[var(--line)] bg-[rgba(7,11,17,.86)] backdrop-blur-md">
+<header class="fixed top-0 inset-x-0 z-50 border-b border-[rgba(52,211,153,.28)] bg-[rgba(5,18,16,.9)] backdrop-blur-md">
   <!-- live system status -->
   <div class="mono text-[10px] tracking-[.12em] text-[var(--mut)] border-b border-[var(--line)] bg-[rgba(10,16,24,.7)]">
     <div class="max-w-6xl mx-auto px-4 flex items-center gap-3 h-7 overflow-hidden whitespace-nowrap">
@@ -302,8 +302,8 @@
   <!-- pipeline nav -->
   <div class="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3">
     <a href="#intro" class="flex items-center gap-2 shrink-0 group" aria-label="Home">
-      <span class="mono font-bold text-sm text-[var(--tx)]">SV</span>
-      <span class="mono text-[10px] text-[var(--dim)] tracking-[.22em] group-hover:text-[var(--cy)] transition-colors hidden sm:inline">~/devops-engineer</span>
+      <span class="mono font-bold text-sm text-[var(--em)]">SV</span>
+      <span class="mono text-[10px] text-[var(--dim)] tracking-[.22em] group-hover:text-[var(--em)] transition-colors hidden sm:inline">~/devops-engineer</span>
     </a>
 
     <nav class="ml-auto flex items-center gap-1 overflow-x-auto py-2 -my-2 no-scrollbar" aria-label="Pipeline navigation">
@@ -318,7 +318,7 @@
       <a href="#education" class="nav-stage" data-stage="monitor" title="Monitor — credentials & certs"><span class="dot"></span>MONITOR</a>
     </nav>
 
-    <a href="#contact" class="hidden md:inline-flex shrink-0 ml-2 mono text-[11px] tracking-[.14em] px-4 py-2 rounded-lg bg-[var(--cy)] text-[#04121a] font-bold hover:shadow-[0_0_20px_-2px_rgba(34,211,238,.7)] transition-all">
+    <a href="#contact" class="hidden md:inline-flex shrink-0 ml-2 mono text-[11px] tracking-[.14em] px-4 py-2 rounded-lg bg-[var(--em)] text-[#04121a] font-bold hover:shadow-[0_0_20px_-2px_rgba(52,211,153,.7)] transition-all">
       WEBHOOK →
     </a>
   </div>
@@ -355,9 +355,9 @@
             </h1>
           </div>
           <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
-            Standardizing infrastructure, accelerating build pipelines, and scaling cloud and on-prem environments
-            with precision — from <span class="text-[var(--tx)]">Hardware-in-the-Loop CI</span> to
-            <span class="text-[var(--tx)]">multi-cloud infrastructure-as-code</span>.
+            I build reliable delivery systems that automate infrastructure, accelerate CI/CD, and connect
+            <span class="text-[var(--tx)]">on-prem environments</span> with
+            <span class="text-[var(--tx)]">cloud infrastructure-as-code</span>.
           </p>
 
           <div class="mt-4 mono text-[12.5px] text-[var(--cy)] cursor" id="typewriter" aria-label="Current tech stack">$ stack --list</div>
@@ -394,7 +394,7 @@
               <span class="px-2 py-0.5 rounded bg-[rgba(52,211,153,.08)] text-[var(--em)]">github-actions</span>
               <span class="px-2 py-0.5 rounded bg-[rgba(167,139,250,.08)] text-[var(--vi)]">docker</span>
               <span class="px-2 py-0.5 rounded bg-[rgba(251,191,36,.08)] text-[var(--am)]">jenkins</span>
-              <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">grafana</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">Python</span>
             </div>
           </div>
         </div>
@@ -411,8 +411,8 @@
   <section id="skills" class="relative py-20 border-t border-[var(--line)] grid-bg">
     <div class="max-w-6xl mx-auto px-4">
       <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 01 · BUILD — TOOLCHAIN</div>
-      <h2 class="disp text-2xl md:text-3xl font-bold mb-2">Skills &amp; <span class="text-[var(--em)]">Toolchain</span></h2>
-      <p class="text-sm text-[var(--mut)] mb-6">A live cluster of the platforms I ship with. Hover a node to trace its lane.</p>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-2">Skills &amp; <span class="text-[var(--em)]">Technologies</span></h2>
+      <p class="text-sm text-[var(--mut)] mb-6">The languages, platforms, and tools I use to build, automate, and monitor reliable systems. Hover an item to explore each capability.</p>
 
       <div id="skillsTabs" class="flex flex-wrap gap-2 mb-8" role="tablist" aria-label="Skill categories"></div>
       <div id="skillsGrid" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4"></div>
@@ -1012,10 +1012,8 @@
     const LINES = [
       '▸ <span class="text-[var(--tx)]">shayal vaghasiya</span> — devops / build &amp; release engineer',
       '▸ availability: <span class="text-[var(--em)] font-bold">● OPEN TO WORK</span> — hireable now',
-      '▸ freelance: <span class="text-[var(--am)] font-bold">■ accepting projects</span> · ci/cd · terraform · aws',
       '▸ experience: <span class="text-[var(--cy)]">wipro → nxp</span> · hw-in-loop ci · 100+ pipelines',
-      '▸ socials: <span class="text-[var(--cy)]">github</span> · <span class="text-[var(--vi)]">linkedin</span> · <span class="text-[var(--em)]">email</span>',
-      '▸ messages: <span class="text-[var(--cy)]">contact form</span> → inbox · <span class="text-[var(--em)]">reply &lt; 24h</span>'
+      '▸ socials: <a href="https://github.com/shayalvaghasiya" target="_blank" rel="noopener noreferrer" class="text-[var(--cy)] hover:underline">github</a> · <a href="https://linkedin.com/in/shayalvaghasiya" target="_blank" rel="noopener noreferrer" class="text-[var(--vi)] hover:underline">linkedin</a> · <a href="mailto:shayalvaghasiya@gmail.com" class="text-[var(--em)] hover:underline">email</a>',
     ];
     el.innerHTML = '';
     const frag = document.createDocumentFragment();
