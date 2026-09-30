@@ -132,7 +132,22 @@
   /* ============ BOOT OVERLAY ============ */
   .boot { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; transition: opacity .55s ease; }
   .boot.off { opacity: 0; pointer-events: none; }
-  .boot-log { font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: .08em; color: var(--cy); white-space: pre; text-shadow: 0 0 18px rgba(34,211,238,.5); }
+  .boot-log {
+    position: relative; width: min(92vw, 760px); height: 13em; overflow: hidden;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: .08em;
+    color: var(--cy); white-space: pre; text-align: center;
+    text-shadow: 0 0 18px rgba(34,211,238,.5);
+  }
+  .boot-entry {
+    position: absolute; top: 50%; left: 0; right: 0;
+    transition: transform .32s ease, opacity .32s ease, filter .32s ease;
+  }
+  .boot-entry[data-age="0"] { opacity: 1; filter: none; }
+  .boot-entry[data-age="1"] { opacity: .48; filter: blur(.65px); }
+  .boot-entry[data-age="2"] { opacity: .3; filter: blur(1px); }
+  .boot-entry[data-age="3"] { opacity: .18; filter: blur(1.35px); }
+  .boot-entry[data-age="4"] { opacity: .1; filter: blur(1.7px); }
+  .boot-entry[data-age="5"] { opacity: .05; filter: blur(2px); }
 
   /* ============ STATUS BAR ============ */
   .live-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--em); animation: blink 1.7s ease-in-out infinite; }
@@ -263,6 +278,8 @@
 
   /* cursor blink for typewriter */
   .cursor::after { content: "▋"; color: var(--cy); animation: blink 1s steps(1) infinite; margin-left: 2px; }
+  #typewriter { color: var(--em); font-size: 15px; font-weight: 600; letter-spacing: .04em; text-shadow: 0 0 14px rgba(52,211,153,.35); }
+  #typewriter::after { color: var(--em); }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -275,7 +292,7 @@
 
 <!-- ================= BOOT OVERLAY ================= -->
 <div id="boot" class="boot" aria-hidden="true">
-  <div class="boot-log" id="bootLog">&gt; portfolio-shell v2.4.1 _</div>
+  <div class="boot-log" id="bootLog"></div>
 </div>
 
 <!-- ================= FX LAYERS ================= -->
@@ -360,7 +377,7 @@
             <span class="text-[var(--tx)]">cloud infrastructure-as-code</span>.
           </p>
 
-          <div class="mt-4 mono text-[12.5px] text-[var(--cy)] cursor" id="typewriter" aria-label="Current tech stack">$ stack --list</div>
+          <div class="mt-4 mono cursor" id="typewriter" aria-label="Current tech stack">$ stack --list</div>
 
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="#experience" class="mono text-[12px] tracking-[.16em] px-5 py-3 rounded-lg bg-[var(--cy)] text-[#04121a] font-bold hover:shadow-[0_0_28px_-4px_rgba(34,211,238,.8)] transition-all hover:-translate-y-0.5">
@@ -861,7 +878,17 @@
     const log = $('#bootLog'); let i = 0;
     const skip = () => { clearInterval(t); $('#boot').classList.add('off'); setTimeout(() => $('#boot').remove(), 600); };
     const t = setInterval(() => {
-      log.innerHTML = lines[i] + ' _'; i++;
+      const entry = document.createElement('div');
+      entry.className = 'boot-entry';
+      entry.innerHTML = lines[i] + (i === lines.length - 1 ? ' _' : '');
+      log.appendChild(entry);
+      [...log.children].forEach((line, index, all) => {
+        const age = all.length - index - 1;
+        line.dataset.age = String(age);
+        line.hidden = age > 5;
+        line.style.transform = `translateY(calc(-50% - ${age * 1.65}em)) scale(${Math.max(.72, 1 - age * .055)})`;
+      });
+      i++;
       if (i >= lines.length) { clearInterval(t); setTimeout(() => ov.classList.add('off'), 380); setTimeout(() => ov.remove(), 1000); }
     }, reduced ? 0 : 360);
     ov.addEventListener('click', skip);
@@ -1000,7 +1027,7 @@
       });
     }
     const tw = $('#typewriter'); if (!tw) return;
-    const words = ['terraform', 'docker', 'jenkins', 'aws', 'gcp', 'prometheus', 'grafana', 'github-actions', 'linux'];
+    const words = ['Python', 'terraform', 'docker', 'jenkins', 'AWS', 'GCP', 'prometheus', 'grafana', 'github-actions', 'linux'];
     if (reduced) { tw.textContent = '$ stack ' + words.join(' · '); return; }
     let wi = 0, ci = 1, del = false;
     tw.textContent = '$ stack ' + words[0][0];
