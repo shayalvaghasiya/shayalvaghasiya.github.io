@@ -78,6 +78,46 @@
     background-size: 52px 52px;
   }
 
+  /* ============ AVATAR SLOT (round profile placeholder) ============ */
+  .avatar-slot {
+    position: relative; width: 88px; height: 88px; border-radius: 999px;
+    background:
+      radial-gradient(circle at 28% 22%, rgba(34,211,238,.16), transparent 55%),
+      linear-gradient(180deg, rgba(13,21,33,.92), rgba(7,11,17,.96));
+    border: 1px dashed color-mix(in srgb, var(--cy) 55%, transparent);
+    box-shadow: 0 0 0 5px rgba(34,211,238,.06), 0 18px 40px -18px rgba(34,211,238,.55);
+    display: grid; place-items: center; overflow: hidden; flex-shrink: 0;
+  }
+  @media (min-width: 640px) { .avatar-slot { width: 104px; height: 104px; } }
+  .avatar-slot img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; border-radius: 999px;
+  }
+  .avatar-fall {
+    font-family: 'Space Grotesk', Inter, sans-serif; font-weight: 700; font-size: 26px;
+    background: linear-gradient(135deg, var(--cy), var(--em));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .avatar-ring {
+    position: absolute; inset: -3px; border-radius: 999px; border: 2px solid transparent;
+    border-top-color: var(--cy); border-right-color: var(--em);
+    animation: aspin 5s linear infinite; opacity: .85; pointer-events: none;
+  }
+  @keyframes aspin { to { transform: rotate(360deg); } }
+  .av-badge {
+    position: absolute; right: -2px; bottom: 4px; width: 21px; height: 21px; border-radius: 999px;
+    background: var(--panel); border: 2px solid var(--em); color: var(--em);
+    display: grid; place-items: center; font-size: 11px; font-weight: 700;
+  }
+
+  /* ============ COMPACT METRIC RINGS (experience stat strip) ============ */
+  .ring-sm { width: 74px; height: 74px; }
+  .ring-sm::before { inset: 7px; }
+  .ring-val-sm { font-size: 16px; }
+  .ring-val-sm small { font-size: 11px; }
+  .bars-sm { height: 14px; gap: 2px; }
+  .bars-sm span { width: 4px; }
+
   /* ============ SCROLLBAR ============ */
   ::-webkit-scrollbar { width: 10px; height: 8px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -256,13 +296,13 @@
 
   <!-- pipeline nav -->
   <div class="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3">
-    <a href="#hero" class="flex items-center gap-2 shrink-0 group" aria-label="Home">
+    <a href="#intro" class="flex items-center gap-2 shrink-0 group" aria-label="Home">
       <span class="mono font-bold text-sm text-[var(--tx)]">SV</span>
       <span class="mono text-[10px] text-[var(--dim)] tracking-[.22em] group-hover:text-[var(--cy)] transition-colors hidden sm:inline">~/devops-engineer</span>
     </a>
 
     <nav class="ml-auto flex items-center gap-1 overflow-x-auto py-2 -my-2 no-scrollbar" aria-label="Pipeline navigation">
-      <a href="#hero" class="nav-stage" data-stage="code" title="Init — hero / system ready"><span class="dot"></span>CODE</a>
+      <a href="#intro" class="nav-stage" data-stage="code" title="Init — intro / system ready"><span class="dot"></span>CODE</a>
       <span class="nav-arrow">▶</span>
       <a href="#skills" class="nav-stage" data-stage="build" title="Build — skills & toolchain"><span class="dot"></span>BUILD</a>
       <span class="nav-arrow">▶</span>
@@ -281,8 +321,8 @@
 
 <main class="relative z-10">
 
-  <!-- ================= HERO / CODE ================= -->
-  <section id="hero" class="relative grid-bg flex items-center min-h-[100svh] pt-36 pb-20 overflow-hidden">
+  <!-- ================= INTRO / CODE ================= -->
+  <section id="intro" class="relative grid-bg flex items-center min-h-[100svh] pt-36 pb-20 overflow-hidden">
     <!-- cursor spotlight -->
     <div class="absolute inset-0 opacity-70" id="spot" aria-hidden="true"
          style="background: radial-gradient(560px at var(--mx,50%) var(--my,30%), rgba(34,211,238,.07), transparent 60%);"></div>
@@ -296,10 +336,19 @@
         <!-- left: boot text -->
         <div>
           <p class="mono text-xs tracking-[.2em] text-[var(--cy)] mb-5"><span class="text-[var(--glob-ok,#34d399)]">✓</span> INIT_COMPLETE — role: devops / build &amp; release engineer</p>
-          <h1 class="disp font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
-            DevOps<br />
-            <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Engineer</span>
-          </h1>
+          <div class="flex items-center gap-4 sm:gap-7 mb-1">
+            <h1 class="disp font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
+              DevOps<br />
+              <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Engineer</span>
+            </h1>
+            <!-- round profile photo slot — drop ./profile.png in the repo root and it auto-fills -->
+            <div class="avatar-slot" title="Profile photo slot — add ./profile.png to reveal">
+              <div class="avatar-fall" aria-hidden="true">SV</div>
+              <img src="./profile.png" alt="Shayal Vaghasiya" onerror="this.remove()" />
+              <span class="avatar-ring" aria-hidden="true"></span>
+              <span class="av-badge" title="open to work / available">✓</span>
+            </div>
+          </div>
           <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
             Standardizing infrastructure, accelerating build pipelines, and scaling cloud and on-prem environments
             with precision — from <span class="text-[var(--tx)]">Hardware-in-the-Loop CI</span> to
@@ -325,8 +374,8 @@
         </div>
 
         <!-- right: deploy feed console -->
-        <div class="hidden lg:block">
-          <div class="card glow-cy p-5 mono text-[12px] leading-relaxed shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
+        <div class="hidden lg:block lg:w-full lg:-mt-14">
+          <div class="card glow-cy p-6 mono text-[12.5px] leading-relaxed shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
             <div class="flex items-center gap-1.5 pb-3 border-b border-[var(--line)] mb-3">
               <span class="w-2.5 h-2.5 rounded-full bg-[var(--rs)] opacity-70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-[var(--am)] opacity-70"></span>
@@ -334,7 +383,7 @@
               <span class="ml-2 text-[var(--dim)] tracking-[.15em]">profile-feed — live</span>
               <span class="ml-auto text-[var(--em)]"><span class="live-dot inline-block"></span></span>
             </div>
-            <div id="feed" class="space-y-1.5 text-[var(--mut)]"></div>
+            <div id="feed" class="space-y-2 text-[var(--mut)]"></div>
             <div class="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap gap-1.5">
               <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">terraform</span>
               <span class="px-2 py-0.5 rounded bg-[rgba(52,211,153,.08)] text-[var(--em)]">github-actions</span>
@@ -348,71 +397,15 @@
       </div>
     </div>
 
-    <a href="#metrics" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-[var(--dim)] hover:text-[var(--cy)] transition-colors mono text-[11px] tracking-[.2em]" aria-label="Scroll to metrics">
+    <a href="#skills" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-[var(--dim)] hover:text-[var(--cy)] transition-colors mono text-[11px] tracking-[.2em]" aria-label="Scroll to skills">
       ▼ SCROLL
     </a>
-  </section>
-
-  <!-- ================= METRICS ================= -->
-  <section id="metrics" class="relative py-20 border-t border-[var(--line)]">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 01 · OBSERVABILITY — BUILD HEALTH</div>
-      <h2 class="disp text-2xl md:text-3xl font-bold mb-8">System <span class="text-[var(--cy)]">SLA Metrics</span></h2>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-        <div class="card glow-em p-5 flex flex-col gap-4">
-          <div class="ring" style="--acc: var(--em); --p: 30;">
-            <div class="ring-val"><span data-count="30">0</span><small>%</small></div>
-          </div>
-          <div>
-            <p class="font-semibold text-sm">Pipeline Efficiency Boost</p>
-            <p class="mono text-[11px] text-[var(--mut)] mt-1">↘ release cycle −30%</p>
-          </div>
-          <div class="bars" style="--acc: var(--em)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        </div>
-
-        <div class="card glow-cy p-5 flex flex-col gap-4">
-          <div class="ring" style="--acc: var(--cy); --p: 60;">
-            <div class="ring-val"><span data-count="60">0</span><small>%</small></div>
-          </div>
-          <div>
-            <p class="font-semibold text-sm">Faster Debugging</p>
-            <p class="mono text-[11px] text-[var(--mut)] mt-1">⏱ automated log parse &amp; triage</p>
-          </div>
-          <div class="bars" style="--acc: var(--cy)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        </div>
-
-        <div class="card glow-am p-5 flex flex-col gap-4">
-          <div class="ring" style="--acc: var(--vi); --p: 100;">
-            <div class="ring-val"><span data-count="100">0</span><small>%</small></div>
-          </div>
-          <div>
-            <p class="font-semibold text-sm">Security &amp; License Compliance</p>
-            <p class="mono text-[11px] text-[var(--mut)] mt-1">🛡 Coverity · Black Duck automation</p>
-          </div>
-          <div class="bars" style="--acc: var(--vi)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        </div>
-
-        <div class="card glow-em p-5 flex flex-col gap-4">
-          <div class="ring" style="--acc: var(--am); --p: 100;">
-            <div class="ring-val"><span data-count="100">0</span><small>+</small></div>
-          </div>
-          <div>
-            <p class="font-semibold text-sm">Pipelines Maintained</p>
-            <p class="mono text-[11px] text-[var(--mut)] mt-1">⚙ standard Jenkins templates</p>
-          </div>
-          <div class="bars" style="--acc: var(--am)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-        </div>
-
-      </div>
-    </div>
   </section>
 
   <!-- ================= SKILLS / BUILD ================= -->
   <section id="skills" class="relative py-20 border-t border-[var(--line)] grid-bg">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 02 · BUILD — TOOLCHAIN</div>
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 01 · BUILD — TOOLCHAIN</div>
       <h2 class="disp text-2xl md:text-3xl font-bold mb-2">Skills &amp; <span class="text-[var(--em)]">Toolchain</span></h2>
       <p class="text-sm text-[var(--mut)] mb-6">A live cluster of the platforms I ship with. Hover a node to trace its lane.</p>
 
@@ -424,8 +417,56 @@
   <!-- ================= EXPERIENCE / TEST ================= -->
   <section id="experience" class="relative py-20 border-t border-[var(--line)]">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 03 · TEST — EXECUTION HISTORY</div>
-      <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Execution <span class="text-[var(--am)]">Log</span></h2>
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 02 · TEST — EXECUTION HISTORY</div>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-3">Execution <span class="text-[var(--am)]">Log</span></h2>
+      <p class="text-sm text-[var(--mut)] mb-8">SLA stats measured across the two engagements below — the numbers that actually shipped in prod.</p>
+
+      <!-- SLA metrics → values lifted from the resume experience section -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <div class="card glow-em p-4 flex items-center gap-4">
+          <div class="ring ring-sm shrink-0" style="--acc: var(--em); --p: 30;">
+            <div class="ring-val ring-val-sm"><span data-count="30">0</span><small>%</small></div>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-sm leading-snug">Release-Cycle Reduction</p>
+            <p class="mono text-[10px] text-[var(--mut)] mt-1">Wipro · NXP HIL pipelines</p>
+            <div class="bars bars-sm mt-2" style="--acc: var(--em)"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="card glow-cy p-4 flex items-center gap-4">
+          <div class="ring ring-sm shrink-0" style="--acc: var(--cy); --p: 60;">
+            <div class="ring-val ring-val-sm"><span data-count="60">0</span><small>%</small></div>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-sm leading-snug">Debugging Time Cut</p>
+            <p class="mono text-[10px] text-[var(--mut)] mt-1">NXP · log parse &amp; failure triage</p>
+            <div class="bars bars-sm mt-2" style="--acc: var(--cy)"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="card glow-am p-4 flex items-center gap-4">
+          <div class="ring ring-sm shrink-0" style="--acc: var(--vi); --p: 100;">
+            <div class="ring-val ring-val-sm"><span data-count="100">0</span><small>%</small></div>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-sm leading-snug">License Compliance</p>
+            <p class="mono text-[10px] text-[var(--mut)] mt-1">NXP · Coverity / Black Duck daily</p>
+            <div class="bars bars-sm mt-2" style="--acc: var(--vi)"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="card glow-em p-4 flex items-center gap-4">
+          <div class="ring ring-sm shrink-0" style="--acc: var(--am); --p: 100;">
+            <div class="ring-val ring-val-sm"><span data-count="100">0</span><small>+</small></div>
+          </div>
+          <div class="min-w-0">
+            <p class="font-semibold text-sm leading-snug">Pipelines Maintained</p>
+            <p class="mono text-[10px] text-[var(--mut)] mt-1">Wipro · standardized Jenkins templates</p>
+            <div class="bars bars-sm mt-2" style="--acc: var(--am)"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
 
       <div class="exp-timeline max-w-3xl space-y-10">
 
@@ -487,7 +528,7 @@
   <!-- ================= PROJECTS / DEPLOY ================= -->
   <section id="projects" class="relative py-20 border-t border-[var(--line)] grid-bg">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 04 · DEPLOY — SHIPPED STACKS</div>
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 03 · DEPLOY — SHIPPED STACKS</div>
       <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Deployed <span class="text-[var(--vi)]">Stacks</span></h2>
 
       <div class="grid md:grid-cols-2 gap-4">
@@ -547,7 +588,7 @@
   <!-- ================= EDUCATION & CERTS / MONITOR ================= -->
   <section id="education" class="relative py-20 border-t border-[var(--line)]">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 05 · MONITOR — VERIFIED CREDENTIALS</div>
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 04 · MONITOR — VERIFIED CREDENTIALS</div>
       <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Credentials <span class="text-[var(--cy)]">Verified</span></h2>
 
       <div class="grid md:grid-cols-2 gap-4">
@@ -595,7 +636,7 @@
   <!-- ================= CONTACT / DISPATCH ================= -->
   <section id="contact" class="relative py-20 border-t border-[var(--line)] grid-bg">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 06 · DISPATCH — OPEN WEBHOOK</div>
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 05 · DISPATCH — OPEN WEBHOOK</div>
       <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Trigger a <span class="text-[var(--em)]">Conversation</span></h2>
 
       <div class="grid lg:grid-cols-2 gap-8 items-start">
@@ -769,7 +810,7 @@
 'use strict';
 /* ============================================================
    PORTFOLIO RUNTIME — vanilla JS, zero deps.
-   Modules: boot · status ticker · hero canvas · typewriter ·
+   Modules: boot · status ticker · intro canvas · typewriter ·
    counters · skills graph · scrollspy · terminal · modal ·
    contact form · toasts
 ============================================================ */
@@ -809,106 +850,116 @@
     setInterval(() => { lat.textContent = (7 + Math.floor(Math.random() * 18)) + 'ms'; }, 2600);
   })();
 
-  /* ---------- 3. HERO PIPELINE CANVAS ---------- */
-  (function heroCanvas() {
-    const cv = $('#pipeline'), hero = $('#hero');
-    if (!cv || !hero) return;
+  /* ---------- 3. INTRO BACKGROUND — DEVOPS COMMAND RAIN ---------- */
+  (function bgOps() {
+    const cv = $('#pipeline'), intro = $('#intro');
+    if (!cv || !intro) return;
     const ctx = cv.getContext('2d');
     const dpr = Math.min(devicePixelRatio || 1, 2);
-    let W = 0, H = 0, segs = [], total = 0, dash = 0;
-    // serpentine pipeline route (fractions of the hero box)
-    const WAY = [[0.0, .80], [.30, .80], [.30, .28], [.62, .28], [.62, .68], [1.0, .68]];
-    const NODE_C = ['#22d3ee', '#34d399', '#fbbf24', '#22d3ee', '#34d399', '#a78bfa'];
-    const px = (p) => [p[0] * W, p[1] * H];
-    const lerp = (a, b, t) => a + (b - a) * t;
+    let W = 0, H = 0;
 
-    function build() {
-      segs = []; total = 0;
-      for (let i = 0; i < WAY.length - 1; i++) {
-        const [ax, ay] = px(WAY[i]), [bx, by] = px(WAY[i + 1]);
-        const len = Math.hypot(bx - ax, by - ay);
-        segs.push({ ax, ay, bx, by, len }); total += len;
-      }
+    // common devops commands float up and fade — color-coded (cy = tools, em = ok/build, am = apply/actions, vi = orchestration)
+    const CMDS = [
+      ['terraform plan', '#22d3ee'], ['terraform apply -auto-approve', '#fbbf24'],
+      ['docker build -t app .', '#22d3ee'], ['docker compose up -d', '#34d399'],
+      ['git push origin main', '#34d399'], ['kubectl rollout status app', '#22d3ee'],
+      ['helm upgrade --install core', '#a78bfa'], ['ansible-playbook deploy.yml', '#a78bfa'],
+      ['jenkins build pipeline/100+', '#fbbf24'], ['npm run build', '#34d399'],
+      ['pip install -r requirements.txt', '#22d3ee'], ['gradle assembleRelease', '#a78bfa'],
+      ['go build ./...', '#34d399'], ['make smoke-test', '#22d3ee'],
+      ['aws ecr get-login-password', '#fbbf24'], ['gcloud auth login', '#34d399'],
+      ['ssh deploy@n1.svc.cluster', '#22d3ee'], ['systemctl status jenkins', '#34d399'],
+      ['telegraf --config telegraf.conf', '#22d3ee'], ['promtool check rules', '#34d399'],
+      ['coverity cov-build --dir idir', '#fbbf24'], ['blackduck detect --scan', '#fbbf24'],
+      ['scp dist/ srv:/opt/release', '#a78bfa'], ['kubectl exec -it pod -- sh', '#22d3ee'],
+      ['vault write secret/ci token=•••', '#a78bfa'], ['tar -czf release.tar.gz dist', '#34d399'],
+      ['git tag v1.4.0 && push --tags', '#fbbf24'], ['curl -fsSI https://shayal.dev', '#34d399'],
+      ['sonar-scanner -Dsonar.key', '#22d3ee'], ['packer build aws-ami.pkr.hcl', '#a78bfa']
+    ];
+    const ease = (t) => t * t * (3 - 2 * t);
+    // alpha envelope over progress p (0..1): fade in → hold → fade out
+    const alpha = (p) => p < .14 ? ease(p / .14) : (p < .72 ? 1 : Math.max(0, 1 - ease((p - .72) / .28)));
+
+    let parts = [];
+
+    function spawn() {
+      const cmd = CMDS[(Math.random() * CMDS.length) | 0];
+      const size = 10 + Math.random() * 7;
+      const font = `600 ${size}px "JetBrains Mono", ui-monospace, monospace`;
+      ctx.font = font;
+      const w = Math.ceil(ctx.measureText(cmd[0]).width);
+      return {
+        text: cmd[0], color: cmd[1], size, font, w,
+        x: 12 + Math.random() * Math.max(20, W - w - 24),
+        T: 8000 + Math.random() * 11000,
+        age: Math.random() * 9000,
+        startY: H + 46, endY: -58
+      };
     }
-    function atDist(d) {
-      let rem = d;
-      for (const s of segs) {
-        if (rem <= s.len) {
-          const t = s.len ? rem / s.len : 0;
-          return [lerp(s.ax, s.bx, t), lerp(s.ay, s.by, t)];
-        }
-        rem -= s.len;
-      }
-      const l = segs[segs.length - 1];
-      return [l.bx, l.by];
+    function seed() {
+      const n = W < 768 ? 14 : 26;
+      parts = Array.from({ length: n }, spawn);
     }
     function resize() {
-      const r = hero.getBoundingClientRect();
+      const r = intro.getBoundingClientRect();
       W = r.width; H = r.height;
       cv.width = W * dpr; cv.height = H * dpr;
       cv.style.width = W + 'px'; cv.style.height = H + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      build();
+      if (!parts.length) { seed(); return; }
+      parts.forEach(p => { p.startY = H + 46; p.endY = -58; p.x = Math.min(p.x, Math.max(12, W - p.w - 24)); });
     }
     resize();
     addEventListener('resize', () => { resize(); if (reduced) drawStatic(); });
 
-    const COLORS = ['#22d3ee', '#34d399', '#fbbf24', '#a78bfa'];
-    const pulses = Array.from({ length: 16 }, () => ({
-      t: Math.random(), sp: .00035 + Math.random() * .00075,
-      c: COLORS[Math.floor(Math.random() * COLORS.length)],
-      r: 1.5 + Math.random() * 2
-    }));
-
-    function drawGrid() {
-      ctx.strokeStyle = 'rgba(122,148,182,.04)'; ctx.lineWidth = 1;
-      const step = 48;
-      ctx.beginPath();
-      for (let x = 0; x < W; x += step) { ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); }
-      for (let y = 0; y < H; y += step) { ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); }
-      ctx.stroke();
-    }
-    function drawPath() {
-      ctx.beginPath();
-      ctx.moveTo(segs[0].ax, segs[0].ay);
-      for (const s of segs) ctx.lineTo(s.bx, s.by);
-      ctx.strokeStyle = 'rgba(34,211,238,.16)'; ctx.lineWidth = 2;
-      ctx.setLineDash([5, 9]); ctx.lineDashOffset = -dash; ctx.stroke(); ctx.setLineDash([]);
-      // nodes
-      WAY.forEach((p, i) => {
-        const [x, y] = px(p);
-        ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2);
-        ctx.strokeStyle = NODE_C[i % NODE_C.length]; ctx.globalAlpha = .5; ctx.stroke();
-        ctx.beginPath(); ctx.arc(x, y, 1.6, 0, Math.PI * 2); ctx.fillStyle = NODE_C[i % NODE_C.length]; ctx.fill();
-        ctx.globalAlpha = 1;
-      });
-    }
-    function frame(ts) {
-      dash = (dash + 0.03) % 40;
+    function draw(now) {
+      const dt = Math.min(50, now - last); last = now;
       ctx.clearRect(0, 0, W, H);
-      drawGrid(); drawPath();
-      for (const p of pulses) {
-        p.t += p.sp * (16); // ~1 update/frame
-        if (p.t > 1) p.t -= 1;
-        const [x, y] = atDist(p.t * total);
-        ctx.beginPath(); ctx.arc(x, y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.c; ctx.shadowColor = p.c; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
-      }
-      requestAnimationFrame(frame);
+      ctx.textBaseline = 'alphabetic';
+      parts.forEach(p => {
+        p.age += dt;
+        if (p.age >= p.T) Object.assign(p, spawn());
+        const prog = p.age / p.T;
+        const y = p.startY - prog * (p.startY - p.endY);
+        const a = alpha(prog) * .42; // keep it subtle behind the copy
+        if (a <= 0) return;
+        ctx.font = p.font;
+        ctx.fillStyle = p.color; ctx.globalAlpha = a;
+        ctx.shadowColor = p.color; ctx.shadowBlur = 6;
+        ctx.fillText('$ ', p.x, y);
+        ctx.fillText(p.text, p.x + 13, y);
+        ctx.shadowBlur = 0;
+      });
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
     }
     function drawStatic() {
-      ctx.clearRect(0, 0, W, H); drawGrid(); drawPath();
-      for (const p of pulses) { const [x, y] = atDist(p.t * total); ctx.beginPath(); ctx.arc(x, y, p.r, 0, 7); ctx.fillStyle = p.c; ctx.fill(); }
+      ctx.clearRect(0, 0, W, H);
+      ctx.textBaseline = 'alphabetic';
+      const rows = Math.max(5, Math.round(H / 110));
+      for (let i = 0; i < rows; i++) {
+        const cmd = CMDS[(Math.random() * CMDS.length) | 0];
+        const size = 11 + Math.random() * 5;
+        ctx.font = `600 ${size}px "JetBrains Mono", ui-monospace, monospace`;
+        const w = Math.ceil(ctx.measureText(cmd[0]).width);
+        const x = 12 + Math.random() * Math.max(20, W - w - 24);
+        const y = 26 + i * (H - 60) / rows;
+        ctx.globalAlpha = .18;
+        ctx.fillStyle = cmd[1];
+        ctx.fillText('$ ' + cmd[0], x, y);
+      }
+      ctx.globalAlpha = 1;
     }
-    if (reduced) { drawStatic(); } else { requestAnimationFrame(frame); }
+    let last = performance.now();
+    if (reduced) drawStatic(); else requestAnimationFrame(draw);
   })();
 
   /* ---------- 4. SPOTLIGHT + TYPEWRITER ---------- */
   (function micro() {
-    const hero = $('#hero'), spot = $('#spot');
-    if (hero && spot && !reduced) {
-      hero.addEventListener('mousemove', (e) => {
-        const r = hero.getBoundingClientRect();
+    const intro = $('#intro'), spot = $('#spot');
+    if (intro && spot && !reduced) {
+      intro.addEventListener('mousemove', (e) => {
+        const r = intro.getBoundingClientRect();
         spot.style.setProperty('--mx', e.clientX - r.left + 'px');
         spot.style.setProperty('--my', e.clientY - r.top + 'px');
       });
@@ -932,7 +983,7 @@
     })();
   })();
 
-  /* ---------- 5. HERO DEPLOY FEED ---------- */
+  /* ---------- 5. INTRO DEPLOY FEED (static — no rotation) ---------- */
   (function feed() {
     const el = $('#feed'); if (!el) return;
     const LINES = [
@@ -943,19 +994,14 @@
       '▸ socials: <span class="text-[var(--cy)]">github</span> · <span class="text-[var(--vi)]">linkedin</span> · <span class="text-[var(--em)]">email</span>',
       '▸ messages: <span class="text-[var(--cy)]">contact form</span> → inbox · <span class="text-[var(--em)]">reply &lt; 24h</span>'
     ];
-    let i = 0;
-    function draw() {
-      el.innerHTML = '';
-      for (let k = 0; k < 5; k++) {
-        const line = LINES[(i - k + LINES.length * 2) % LINES.length];
-        const d = document.createElement('div');
-        d.className = 'feed-line'; d.innerHTML = line;
-        el.appendChild(d);
-      }
-      i++;
-    }
-    draw();
-    if (!reduced) setInterval(draw, 2600);
+    el.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    LINES.forEach(line => {
+      const d = document.createElement('div');
+      d.className = 'feed-line'; d.innerHTML = line;
+      frag.appendChild(d);
+    });
+    el.appendChild(frag);
   })();
 
   /* ---------- 6. METRIC COUNTERS ---------- */
@@ -1097,7 +1143,7 @@
 
   /* ---------- 8. SCROLLSPY ---------- */
   (function spy() {
-    const map = { hero: 'code', metrics: 'code', skills: 'build', experience: 'test', projects: 'deploy', education: 'monitor', contact: 'monitor' };
+    const map = { intro: 'code', skills: 'build', experience: 'test', projects: 'deploy', education: 'monitor', contact: 'monitor' };
     const order = ['code', 'build', 'test', 'deploy', 'monitor'];
     function setActive(stage) {
       $$('.nav-stage').forEach(el => {
