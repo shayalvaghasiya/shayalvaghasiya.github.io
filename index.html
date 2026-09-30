@@ -168,14 +168,14 @@
   .chip {
     font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: .02em;
     padding: .38rem .72rem; border-radius: .5rem; cursor: pointer; user-select: none;
-    color: var(--mut); background: rgba(255,255,255,.018);
-    border: 1px solid color-mix(in srgb, var(--acc, var(--cy)) 24%, transparent);
+    color: #04121a; background: var(--acc, var(--cy));
+    border: 1px solid var(--acc, var(--cy));
     transition: all .22s ease;
   }
   .chip:hover {
-    color: var(--tx); border-color: var(--acc, var(--cy)); transform: translateY(-2px);
+    color: #04121a; border-color: var(--acc, var(--cy)); transform: translateY(-2px);
     box-shadow: 0 0 16px -4px color-mix(in srgb, var(--acc, var(--cy)) 60%, transparent);
-    background: color-mix(in srgb, var(--acc, var(--cy)) 8%, transparent);
+    background: color-mix(in srgb, var(--acc, var(--cy)) 85%, white);
   }
 
   /* skill hub + connector lines */
