@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shayal Vaghasiya — DevOps / Platform Reliability Engineer</title>
+<meta name="description" content="Portfolio of a DevOps & Platform Engineer: CI/CD orchestration, infrastructure-as-code, cloud reliability and observability at scale." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070b11'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2322d3ee' stroke-width='3'/%3E%3Ccircle cx='24' cy='24' r='4' fill='%2334d399'/%3E%3C/svg%3E" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Tailwind (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          display: ['"Space Grotesk"', 'Inter', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    --bg: #070b11;
+    --panel: #0a1018;
+    --panel2: #0d1521;
+    --line: #16202e;
+    --line2: #223248;
+    --cy: #22d3ee;
+    --em: #34d399;
+    --am: #fbbf24;
+    --vi: #a78bfa;
+    --rs: #fb7185;
+    --tx: #dbe7f3;
+    --mut: #7d8fa3;
+    --dim: #52647a;
+  }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 118px; }
+  @media (max-width: 760px) { html { scroll-padding-top: 106px; } }
+
+  body {
+    background: var(--bg);
+    color: var(--tx);
+    font-family: Inter, system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  ::selection { background: rgba(34, 211, 238, .28); color: #fff; }
+
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .disp { font-family: 'Space Grotesk', Inter, sans-serif; }
+
+  /* ============ AMBIENT OVERLAYS ============ */
+  .fx {
+    position: fixed; inset: 0; z-index: 90; pointer-events: none;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px);
+    mix-blend-mode: overlay;
+  }
+  body::after { /* subtle noise */
+    content: ""; position: fixed; inset: 0; z-index: 89; pointer-events: none; opacity: .035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(122,148,182,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(122,148,182,.05) 1px, transparent 1px);
+    background-size: 52px 52px;
+  }
+
+  /* ============ SCROLLBAR ============ */
+  ::-webkit-scrollbar { width: 10px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #1c2a3d; border-radius: 8px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-thumb:hover { background: #2b3f58; }
+
+  /* ============ BOOT OVERLAY ============ */
+  .boot { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; transition: opacity .55s ease; }
+  .boot.off { opacity: 0; pointer-events: none; }
+  .boot-log { font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: .08em; color: var(--cy); white-space: pre; text-shadow: 0 0 18px rgba(34,211,238,.5); }
+
+  /* ============ STATUS BAR ============ */
+  .live-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--em); animation: blink 1.7s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1; box-shadow:0 0 8px var(--em);} 50%{opacity:.35; box-shadow:none;} }
+
+  /* ============ NAV / PIPELINE ============ */
+  .nav-stage {
+    position: relative; display: flex; align-items: center; gap: .5rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em;
+    color: var(--mut); padding: .45rem .75rem; border-radius: .5rem;
+    border: 1px solid transparent; transition: all .25s ease; white-space: nowrap;
+  }
+  .nav-stage .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--dim); transition: all .25s ease; }
+  .nav-stage:hover { color: var(--tx); }
+  .nav-stage.active { color: var(--cy); border-color: rgba(34,211,238,.4); background: rgba(34,211,238,.07); box-shadow: 0 0 20px -4px rgba(34,211,238,.35); }
+  .nav-stage.active .dot { background: var(--cy); box-shadow: 0 0 8px var(--cy); }
+  .nav-stage.done { color: var(--em); }
+  .nav-stage.done .dot { background: var(--em); box-shadow: 0 0 6px var(--em); }
+  .nav-arrow { color: var(--dim); font-size: 10px; }
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* ============ CARDS & GLOW ============ */
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.016), rgba(255,255,255,0) 34%), var(--panel);
+    border: 1px solid var(--line); border-radius: 14px;
+    transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+  }
+  .card:hover { border-color: var(--line2); }
+  .glow-cy:hover { border-color: rgba(34,211,238,.45); box-shadow: 0 0 0 1px rgba(34,211,238,.2), 0 24px 60px -24px rgba(34,211,238,.4); }
+  .glow-em:hover { border-color: rgba(52,211,153,.45); box-shadow: 0 0 0 1px rgba(52,211,153,.2), 0 24px 60px -24px rgba(52,211,153,.4); }
+  .glow-am:hover { border-color: rgba(251,191,36,.45); box-shadow: 0 0 0 1px rgba(251,191,36,.2), 0 24px 60px -24px rgba(251,191,36,.4); }
+  .chip {
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: .02em;
+    padding: .38rem .72rem; border-radius: .5rem; cursor: pointer; user-select: none;
+    color: var(--mut); background: rgba(255,255,255,.018);
+    border: 1px solid color-mix(in srgb, var(--acc, var(--cy)) 24%, transparent);
+    transition: all .22s ease;
+  }
+  .chip:hover {
+    color: var(--tx); border-color: var(--acc, var(--cy)); transform: translateY(-2px);
+    box-shadow: 0 0 16px -4px color-mix(in srgb, var(--acc, var(--cy)) 60%, transparent);
+    background: color-mix(in srgb, var(--acc, var(--cy)) 8%, transparent);
+  }
+
+  /* skill hub + connector lines */
+  .skill-card { --acc: var(--cy); }
+  .skill-card[data-accent="em"] { --acc: var(--em); }
+  .skill-card[data-accent="am"] { --acc: var(--am); }
+  .skill-card[data-accent="vi"] { --acc: var(--vi); }
+  .link-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .link-line { fill: none; stroke: rgba(122,148,182,.16); stroke-width: 1.4; transition: stroke .25s ease, filter .25s ease; }
+  .link-line.lit { stroke: var(--acc, var(--cy)); filter: drop-shadow(0 0 4px var(--acc, var(--cy))); }
+  .hub-dot { width: 10px; height: 10px; border-radius: 999px; background: var(--acc, var(--cy)); box-shadow: 0 0 14px var(--acc, var(--cy)); }
+
+  /* ============ METRIC RINGS ============ */
+  .ring {
+    --acc: var(--em); --p: 65;
+    position: relative; width: 96px; height: 96px; border-radius: 999px;
+    background: conic-gradient(var(--acc) calc(var(--p) * 1%), rgba(125,155,185,.12) 0);
+    display: grid; place-items: center;
+    box-shadow: 0 0 26px -10px color-mix(in srgb, var(--acc) 70%, transparent);
+  }
+  .ring::before { content: ""; position: absolute; inset: 10px; border-radius: 999px; background: var(--panel); }
+  .ring-val { position: relative; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 21px; color: var(--tx); line-height: 1; }
+  .ring-val small { color: var(--acc); font-size: 12px; }
+
+  /* sparkline */
+  .bars { display: flex; gap: 3px; align-items: flex-end; height: 22px; }
+  .bars span { width: 5px; border-radius: 2px 2px 0 0; background: var(--acc, var(--cy)); opacity: .55; animation: beat 1.6s ease-in-out infinite; }
+  .bars span:nth-child(2) { animation-delay: .2s; } .bars span:nth-child(3) { animation-delay: .4s; }
+  .bars span:nth-child(4) { animation-delay: .6s; } .bars span:nth-child(5) { animation-delay: .8s; }
+  .bars span:nth-child(6) { animation-delay: 1s; }
+  @keyframes beat { 0%,100%{transform:scaleY(.62);} 50%{transform:scaleY(1);} }
+
+  /* ============ TERMINAL WIDGET ============ */
+  #termOut { overflow-y: auto; }
+  .t-hi { color: var(--em); } .t-c { color: var(--cy); } .t-warn { color: var(--am); } .t-err { color: var(--rs); } .t-ok { color: var(--em); }
+  .tl { animation: tlin .18s ease both; }
+  @keyframes tlin { from { opacity: 0; transform: translateY(3px); } }
+
+  /* ============ TIMELINE (EXPERIENCE) ============ */
+  .exp-timeline { position: relative; }
+  .exp-timeline::before {
+    content: ""; position: absolute; left: 14px; top: 8px; bottom: 8px; width: 1px;
+    background: linear-gradient(180deg, rgba(34,211,238,.5), rgba(34,211,238,.06), transparent);
+  }
+  .exp-node {
+    position: absolute; left: 7px; top: 6px; width: 15px; height: 15px; border-radius: 999px;
+    background: var(--panel); border: 2px solid var(--cy); box-shadow: 0 0 0 4px rgba(34,211,238,.08), 0 0 14px rgba(34,211,238,.55);
+  }
+  .exp-card { margin-left: 2.3rem; }
+
+  /* bullets styled like shell output */
+  .bullet { position: relative; padding-left: 1.35rem; color: #a9b7c9; font-size: 14px; line-height: 1.65; }
+  .bullet::before { content: ">_"; position: absolute; left: 0; color: var(--cy); font-family: 'JetBrains Mono', monospace; font-size: 11px; top: 1px; }
+
+  /* ============ DIAGRAM NODES ============ */
+  .d-node {
+    border: 1px solid var(--line2); background: rgba(255,255,255,.02);
+    border-radius: 10px; padding: .7rem .85rem; transition: all .25s ease;
+  }
+  .d-node:hover { border-color: rgba(34,211,238,.5); box-shadow: 0 0 18px -6px rgba(34,211,238,.45); transform: translateY(-1px); }
+  .d-conn { height: 22px; display: grid; place-items: center; color: var(--dim); font-size: 11px; position: relative; }
+  .d-conn::before { content: ""; position: absolute; width: 1px; height: 100%; background: rgba(34,211,238,.25); }
+  .d-conn span { background: var(--bg); padding: 0 .35rem; position: relative; }
+
+  /* ============ TABS ============ */
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em;
+    color: var(--mut); border: 1px solid var(--line); border-radius: 999px;
+    padding: .45rem .9rem; transition: all .22s ease; cursor: pointer; white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--tx); border-color: var(--line2); }
+  .tab-btn.active { color: #04121a; background: var(--cy); border-color: var(--cy); box-shadow: 0 0 18px -4px rgba(34,211,238,.8); }
+
+  /* ============ TOAST ============ */
+  #toasts { position: fixed; top: 1rem; right: 1rem; z-index: 80; display: flex; flex-direction: column; gap: .5rem; }
+  .toast {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em;
+    padding: .7rem 1rem; border-radius: .6rem; border: 1px solid;
+    background: var(--panel2); opacity: 0; transform: translateX(16px);
+    transition: all .35s ease; max-width: 320px;
+  }
+  .toast.show { opacity: 1; transform: translateX(0); }
+  .toast.ok { border-color: rgba(52,211,153,.5); color: var(--em); box-shadow: 0 10px 30px -12px rgba(52,211,153,.4); }
+  .toast.err { border-color: rgba(251,113,133,.5); color: var(--rs); box-shadow: 0 10px 30px -12px rgba(251,113,133,.4); }
+
+  /* cursor blink for typewriter */
+  .cursor::after { content: "▋"; color: var(--cy); animation: blink 1s steps(1) infinite; margin-left: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+
+<body class="antialiased">
+
+<!-- ================= BOOT OVERLAY ================= -->
+<div id="boot" class="boot" aria-hidden="true">
+  <div class="boot-log" id="bootLog">&gt; portfolio-shell v2.4.1 _</div>
+</div>
+
+<!-- ================= FX LAYERS ================= -->
+<div class="fx" aria-hidden="true"></div>
+
+<!-- ================= STATUS BAR + NAV ================= -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-[var(--line)] bg-[rgba(7,11,17,.86)] backdrop-blur-md">
+  <!-- live system status -->
+  <div class="mono text-[10px] tracking-[.12em] text-[var(--mut)] border-b border-[var(--line)] bg-[rgba(10,16,24,.7)]">
+    <div class="max-w-6xl mx-auto px-4 flex items-center gap-3 h-7 overflow-hidden whitespace-nowrap">
+      <span class="flex items-center gap-1.5 text-[var(--em)]"><span class="live-dot"></span>OPERATIONAL</span>
+      <span class="text-[var(--dim)] hidden sm:inline">·</span>
+      <span class="hidden sm:inline">latency <span id="latency" class="text-[var(--cy)]">12ms</span></span>
+      <span class="text-[var(--dim)] hidden sm:inline">·</span>
+      <span class="hidden sm:inline">uptime <span id="uptime" class="text-[var(--cy)]">0s</span></span>
+      <span class="text-[var(--dim)] hidden lg:inline">·</span>
+      <span class="hidden lg:inline">build <span class="text-[var(--em)]">● PASSING</span></span>
+      <span class="text-[var(--dim)] hidden lg:inline">·</span>
+      <span class="hidden lg:inline">sha <span class="text-[var(--am)]">78f3a21</span></span>
+      <span class="ml-auto text-[var(--dim)]"><span id="clock" class="text-[var(--tx)]">--:--:--</span> UTC</span>
+    </div>
+  </div>
+
+  <!-- pipeline nav -->
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3">
+    <a href="#hero" class="flex items-center gap-2 shrink-0 group" aria-label="Home">
+      <span class="mono font-bold text-sm text-[var(--tx)]">SV</span>
+      <span class="mono text-[10px] text-[var(--dim)] tracking-[.22em] group-hover:text-[var(--cy)] transition-colors hidden sm:inline">~/devops-engineer</span>
+    </a>
+
+    <nav class="ml-auto flex items-center gap-1 overflow-x-auto py-2 -my-2 no-scrollbar" aria-label="Pipeline navigation">
+      <a href="#hero" class="nav-stage" data-stage="code" title="Init — hero / system ready"><span class="dot"></span>CODE</a>
+      <span class="nav-arrow">▶</span>
+      <a href="#skills" class="nav-stage" data-stage="build" title="Build — skills & toolchain"><span class="dot"></span>BUILD</a>
+      <span class="nav-arrow">▶</span>
+      <a href="#experience" class="nav-stage" data-stage="test" title="Test — execution history"><span class="dot"></span>TEST</a>
+      <span class="nav-arrow">▶</span>
+      <a href="#projects" class="nav-stage" data-stage="deploy" title="Deploy — projects & stacks"><span class="dot"></span>DEPLOY</a>
+      <span class="nav-arrow">▶</span>
+      <a href="#education" class="nav-stage" data-stage="monitor" title="Monitor — credentials & certs"><span class="dot"></span>MONITOR</a>
+    </nav>
+
+    <a href="#contact" class="hidden md:inline-flex shrink-0 ml-2 mono text-[11px] tracking-[.14em] px-4 py-2 rounded-lg bg-[var(--cy)] text-[#04121a] font-bold hover:shadow-[0_0_20px_-2px_rgba(34,211,238,.7)] transition-all">
+      WEBHOOK →
+    </a>
+  </div>
+</header>
+
+<main class="relative z-10">
+
+  <!-- ================= HERO / CODE ================= -->
+  <section id="hero" class="relative grid-bg flex items-center min-h-[100svh] pt-36 pb-20 overflow-hidden">
+    <!-- cursor spotlight -->
+    <div class="absolute inset-0 opacity-70" id="spot" aria-hidden="true"
+         style="background: radial-gradient(560px at var(--mx,50%) var(--my,30%), rgba(34,211,238,.07), transparent 60%);"></div>
+    <!-- animated pipeline canvas -->
+    <canvas id="pipeline" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
+    <div class="absolute inset-0" aria-hidden="true" style="background: radial-gradient(80% 60% at 70% 20%, rgba(34,211,238,.05), transparent 60%), radial-gradient(70% 50% at 15% 85%, rgba(52,211,153,.045), transparent 60%);"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 w-full">
+      <div class="grid lg:grid-cols-[1.06fr_.94fr] gap-12 items-center">
+
+        <!-- left: boot text -->
+        <div>
+          <p class="mono text-xs tracking-[.2em] text-[var(--cy)] mb-5"><span class="text-[var(--glob-ok,#34d399)]">✓</span> INIT_COMPLETE — role: devops · platform · reliability</p>
+          <h1 class="disp font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
+            DevOps Engineer<br />
+            <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Platform Reliability &amp; Automation</span>
+          </h1>
+          <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
+            Standardizing infrastructure, accelerating build pipelines, and scaling cloud and on-prem environments
+            with precision — from <span class="text-[var(--tx)]">Hardware-in-the-Loop CI</span> to
+            <span class="text-[var(--tx)]">multi-cloud infrastructure-as-code</span>.
+          </p>
+
+          <div class="mt-4 mono text-[12.5px] text-[var(--cy)] cursor" id="typewriter" aria-label="Current tech stack">$ stack --list</div>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#experience" class="mono text-[12px] tracking-[.16em] px-5 py-3 rounded-lg bg-[var(--cy)] text-[#04121a] font-bold hover:shadow-[0_0_28px_-4px_rgba(34,211,238,.8)] transition-all hover:-translate-y-0.5">
+              ▶ TRIGGER PIPELINE
+            </a>
+            <a href="./resume.pdf" download="shayal-vaghasiya-resume.pdf" class="mono text-[12px] tracking-[.16em] px-5 py-3 rounded-lg border border-[var(--line2)] text-[var(--tx)] hover:border-[var(--em)] hover:text-[var(--em)] hover:shadow-[0_0_24px_-6px_rgba(52,211,153,.6)] transition-all hover:-translate-y-0.5">
+              ⬇ DOWNLOAD ARTIFACT
+            </a>
+          </div>
+
+          <div class="mt-10 flex flex-wrap gap-x-6 gap-y-2 mono text-[11px] text-[var(--dim)] tracking-[.08em]">
+            <span>◆ 10+ months prod CI/CD</span>
+            <span>◆ 100+ pipelines</span>
+            <span>◆ AWS · GCP · on-prem</span>
+          </div>
+        </div>
+
+        <!-- right: deploy feed console -->
+        <div class="hidden lg:block">
+          <div class="card glow-cy p-5 mono text-[12px] leading-relaxed shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
+            <div class="flex items-center gap-1.5 pb-3 border-b border-[var(--line)] mb-3">
+              <span class="w-2.5 h-2.5 rounded-full bg-[var(--rs)] opacity-70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[var(--am)] opacity-70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[var(--em)] opacity-70"></span>
+              <span class="ml-2 text-[var(--dim)] tracking-[.15em]">deploy-feed — live</span>
+              <span class="ml-auto text-[var(--em)]"><span class="live-dot inline-block"></span></span>
+            </div>
+            <div id="feed" class="space-y-1.5 text-[var(--mut)]"></div>
+            <div class="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">terraform</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(52,211,153,.08)] text-[var(--em)]">github-actions</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(167,139,250,.08)] text-[var(--vi)]">docker</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(251,191,36,.08)] text-[var(--am)]">jenkins</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">grafana</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <a href="#metrics" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-[var(--dim)] hover:text-[var(--cy)] transition-colors mono text-[11px] tracking-[.2em]" aria-label="Scroll to metrics">
+      ▼ SCROLL
+    </a>
+  </section>
+
+  <!-- ================= METRICS ================= -->
+  <section id="metrics" class="relative py-20 border-t border-[var(--line)]">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 01 · OBSERVABILITY — BUILD HEALTH</div>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-8">System <span class="text-[var(--cy)]">SLA Metrics</span></h2>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <div class="card glow-em p-5 flex flex-col gap-4">
+          <div class="ring" style="--acc: var(--em); --p: 30;">
+            <div class="ring-val"><span data-count="30">0</span><small>%</small></div>
+          </div>
+          <div>
+            <p class="font-semibold text-sm">Pipeline Efficiency Boost</p>
+            <p class="mono text-[11px] text-[var(--mut)] mt-1">↘ release cycle −30%</p>
+          </div>
+          <div class="bars" style="--acc: var(--em)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="card glow-cy p-5 flex flex-col gap-4">
+          <div class="ring" style="--acc: var(--cy); --p: 60;">
+            <div class="ring-val"><span data-count="60">0</span><small>%</small></div>
+          </div>
+          <div>
+            <p class="font-semibold text-sm">Faster Debugging</p>
+            <p class="mono text-[11px] text-[var(--mut)] mt-1">⏱ automated log parse &amp; triage</p>
+          </div>
+          <div class="bars" style="--acc: var(--cy)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="card glow-am p-5 flex flex-col gap-4">
+          <div class="ring" style="--acc: var(--vi); --p: 100;">
+            <div class="ring-val"><span data-count="100">0</span><small>%</small></div>
+          </div>
+          <div>
+            <p class="font-semibold text-sm">Security &amp; License Compliance</p>
+            <p class="mono text-[11px] text-[var(--mut)] mt-1">🛡 Coverity · Black Duck automation</p>
+          </div>
+          <div class="bars" style="--acc: var(--vi)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="card glow-em p-5 flex flex-col gap-4">
+          <div class="ring" style="--acc: var(--am); --p: 100;">
+            <div class="ring-val"><span data-count="100">0</span><small>+</small></div>
+          </div>
+          <div>
+            <p class="font-semibold text-sm">Pipelines Maintained</p>
+            <p class="mono text-[11px] text-[var(--mut)] mt-1">⚙ standard Jenkins templates</p>
+          </div>
+          <div class="bars" style="--acc: var(--am)"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SKILLS / BUILD ================= -->
+  <section id="skills" class="relative py-20 border-t border-[var(--line)] grid-bg">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 02 · BUILD — TOOLCHAIN</div>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-2">Skills &amp; <span class="text-[var(--em)]">Toolchain</span></h2>
+      <p class="text-sm text-[var(--mut)] mb-6">A live cluster of the platforms I ship with. Hover a node to trace its lane.</p>
+
+      <div id="skillsTabs" class="flex flex-wrap gap-2 mb-8" role="tablist" aria-label="Skill categories"></div>
+      <div id="skillsGrid" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- ================= EXPERIENCE / TEST ================= -->
+  <section id="experience" class="relative py-20 border-t border-[var(--line)]">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 03 · TEST — EXECUTION HISTORY</div>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Execution <span class="text-[var(--am)]">Log</span></h2>
+
+      <div class="exp-timeline max-w-3xl space-y-10">
+
+        <!-- Wipro -->
+        <article class="relative">
+          <div class="exp-node"></div>
+          <div class="exp-card card glow-am p-6 md:p-7">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="mono text-[10px] tracking-[.16em] px-2 py-0.5 rounded bg-[rgba(251,191,36,.1)] text-[var(--am)] border border-[rgba(251,191,36,.25)]">AUG 2025 → MAY 2026</span>
+              <span class="mono text-[10px] tracking-[.16em] px-2 py-0.5 rounded bg-[rgba(52,211,153,.1)] text-[var(--em)] border border-[rgba(52,211,153,.25)]">● PROD</span>
+            </div>
+            <h3 class="disp text-lg md:text-xl font-bold mt-2">Software Engineer</h3>
+            <p class="mono text-[12px] text-[var(--cy)] mt-0.5">Wipro Limited — client: NXP Semiconductors</p>
+            <ul class="mt-4 space-y-2">
+              <li class="bullet">Built on-premise CI/CD orchestration for Hardware-in-the-Loop (HIL) testing across embedded targets.</li>
+              <li class="bullet">Optimized multi-platform firmware &amp; driver pipelines — <span class="text-[var(--em)]">30% release-cycle reduction</span>.</li>
+              <li class="bullet">Standardized <span class="text-[var(--em)]">100+ Jenkins pipelines</span> for pre/post-merge &amp; cross-platform releases.</li>
+              <li class="bullet">Implemented <span class="text-[var(--em)]">Telegraf + Grafana</span> observability dashboards for pipeline health.</li>
+            </ul>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Jenkins</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">HIL</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Telegraf</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Grafana</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Linux</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NXP Intern -->
+        <article class="relative">
+          <div class="exp-node !border-[var(--em)]" style="box-shadow:0 0 0 4px rgba(52,211,153,.08), 0 0 14px rgba(52,211,153,.55);"></div>
+          <div class="exp-card card glow-em p-6 md:p-7">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="mono text-[10px] tracking-[.16em] px-2 py-0.5 rounded bg-[rgba(34,211,238,.1)] text-[var(--cy)] border border-[rgba(34,211,238,.25)]">JUL 2024 → JUN 2025</span>
+              <span class="mono text-[10px] tracking-[.16em] px-2 py-0.5 rounded bg-[rgba(34,211,238,.1)] text-[var(--cy)] border border-[rgba(34,211,238,.25)]">◉ INTERN</span>
+            </div>
+            <h3 class="disp text-lg md:text-xl font-bold mt-2">Software Intern</h3>
+            <p class="mono text-[12px] text-[var(--cy)] mt-0.5">NXP Semiconductors</p>
+            <ul class="mt-4 space-y-2">
+              <li class="bullet">Built a Python pre-merge validation framework for firmware static analysis &amp; sanity checks.</li>
+              <li class="bullet">Created an automated log parser — <span class="text-[var(--em)]">60% faster debugging</span> via failure classification.</li>
+              <li class="bullet">Refactored legacy scripts into modular, containerized components.</li>
+              <li class="bullet">Integrated <span class="text-[var(--em)]">Coverity + Black Duck</span> automated daily security scans.</li>
+            </ul>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Python</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Docker</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Coverity</span>
+              <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Black Duck</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROJECTS / DEPLOY ================= -->
+  <section id="projects" class="relative py-20 border-t border-[var(--line)] grid-bg">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 04 · DEPLOY — SHIPPED STACKS</div>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Deployed <span class="text-[var(--vi)]">Stacks</span></h2>
+
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <!-- Main project -->
+        <article class="card glow-cy p-6 md:p-7 flex flex-col">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <span class="mono text-[10px] tracking-[.16em] px-2 py-0.5 rounded bg-[rgba(34,211,238,.1)] text-[var(--cy)] border border-[rgba(34,211,238,.25)]">FLAGSHIP · AWS</span>
+            <span class="mono text-[10px] text-[var(--dim)]">v1.4.0</span>
+          </div>
+          <h3 class="disp text-xl font-bold">Scalable &amp; Secure 3-Tier AWS Architecture</h3>
+          <p class="text-sm text-[var(--mut)] mt-2 leading-relaxed">
+            Highly available microservices platform provisioned with <span class="text-[var(--tx)]">Terraform</span> and
+            deployed via <span class="text-[var(--tx)]">GitHub Actions</span> — traffic to containerized services behind an
+            ALB with Multi-AZ stateful data tier.
+          </p>
+          <ul class="mt-4 space-y-2 text-[14px] text-[#a9b7c9]">
+            <li class="bullet">IaC: VPC · subnets · security groups · IAM — codified and moduleized.</li>
+            <li class="bullet">CI/CD: GitHub Actions → Terraform plan/apply → ECS deployment.</li>
+            <li class="bullet">Observability: centralized CloudWatch dashboards, metrics, ECS Container Insights.</li>
+          </ul>
+          <button onclick="openModal()"
+                  class="mt-auto pt-5 text-left mono text-[11px] tracking-[.16em] text-[var(--cy)] hover:text-[var(--tx)] transition-colors inline-flex items-center gap-2">
+            <span class="w-6 h-6 rounded-md border border-[var(--line2)] grid place-items-center text-[12px]">▦</span>
+            OPEN ARCHITECTURE DIAGRAM →
+          </button>
+        </article>
+
+        <!-- secondary project -->
+        <article class="card glow-em p-6 md:p-7 flex flex-col">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <span class="mono text-[10px] tracking-[.16em] px-2 py-0.5 rounded bg-[rgba(52,211,153,.1)] text-[var(--em)] border border-[rgba(52,211,153,.25)]">ON-PREM · CI</span>
+            <span class="mono text-[10px] text-[var(--dim)]">v2.2.0</span>
+          </div>
+          <h3 class="disp text-xl font-bold">Firmware CI/CD Platform (HIL)</h3>
+          <p class="text-sm text-[var(--mut)] mt-2 leading-relaxed">
+            Standardized Jenkins orchestration for pre/post-merge and cross-platform release builds,
+            wired into hardware-in-the-loop rigs with automated health telemetry.
+          </p>
+          <ul class="mt-4 space-y-2 text-[14px] text-[#a9b7c9]">
+            <li class="bullet">Declarative pipeline templates — 100+ jobs, zero drift between boards.</li>
+            <li class="bullet">Pipeline health streaming to Grafana via Telegraf; failure fan-out to Slack.</li>
+            <li class="bullet">Security gates: Coverity static analysis + Black Duck license scan daily.</li>
+          </ul>
+          <div class="mt-5 flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Jenkins</span>
+            <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Telegraf</span>
+            <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Grafana</span>
+            <span class="px-2 py-0.5 rounded bg-[rgba(255,255,255,.03)] border border-[var(--line)] text-[var(--mut)] mono text-[10.5px]">Coverity</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EDUCATION & CERTS / MONITOR ================= -->
+  <section id="education" class="relative py-20 border-t border-[var(--line)]">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 05 · MONITOR — VERIFIED CREDENTIALS</div>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Credentials <span class="text-[var(--cy)]">Verified</span></h2>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="card glow-em p-6">
+          <div class="mono text-[10px] tracking-[.16em] text-[var(--em)] mb-2">◉ M.TECH</div>
+          <h3 class="disp text-lg font-bold">Computer Science &amp; Engg. (Data Science)</h3>
+          <p class="mono text-[12px] text-[var(--mut)] mt-1">Nirma University</p>
+          <div class="mt-4 flex items-center gap-2 mono text-[12px]">
+            <span class="text-[var(--dim)]">GPA</span>
+            <span class="px-2 py-0.5 rounded bg-[rgba(52,211,153,.12)] text-[var(--em)] border border-[rgba(52,211,153,.3)] font-bold">8.55 / 10</span>
+          </div>
+        </div>
+
+        <div class="card glow-cy p-6">
+          <div class="mono text-[10px] tracking-[.16em] text-[var(--cy)] mb-2">◉ B.E.</div>
+          <h3 class="disp text-lg font-bold">Computer Engineering</h3>
+          <p class="mono text-[12px] text-[var(--mut)] mt-1">LDRP-ITR</p>
+          <div class="mt-4 flex items-center gap-2 mono text-[12px]">
+            <span class="text-[var(--dim)]">GPA</span>
+            <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.12)] text-[var(--cy)] border border-[rgba(34,211,238,.3)] font-bold">7.94 / 10</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="mono text-[12px] tracking-[.18em] text-[var(--dim)] mt-10 mb-4">CERTIFICATIONS — <span class="text-[var(--em)]">● VALID</span></h3>
+      <div class="grid sm:grid-cols-2 gap-4 max-w-2xl">
+        <a href="#" title="Replace with your Cloud Credential verification URL" class="card glow-am p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-transform">
+          <span class="w-10 h-10 rounded-lg bg-[rgba(167,139,250,.1)] border border-[rgba(167,139,250,.3)] grid place-items-center text-lg shrink-0">☁</span>
+          <div>
+            <p class="font-semibold text-sm">Google Cloud Certified — Associate Cloud Engineer</p>
+            <p class="mono text-[11px] text-[var(--mut)] mt-0.5">issuer: Google Cloud · ✓ verify</p>
+          </div>
+        </a>
+        <a href="#" title="Replace with your AWS Credential verification URL" class="card glow-am p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-transform">
+          <span class="w-10 h-10 rounded-lg bg-[rgba(251,191,36,.1)] border border-[rgba(251,191,36,.3)] grid place-items-center text-lg shrink-0">☁</span>
+          <div>
+            <p class="font-semibold text-sm">AWS Certified Cloud Practitioner</p>
+            <p class="mono text-[11px] text-[var(--mut)] mt-0.5">issuer: Amazon Web Services · ✓ verify</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT / DISPATCH ================= -->
+  <section id="contact" class="relative py-20 border-t border-[var(--line)] grid-bg">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mono text-[11px] tracking-[.18em] text-[var(--dim)] mb-2"># 06 · DISPATCH — OPEN WEBHOOK</div>
+      <h2 class="disp text-2xl md:text-3xl font-bold mb-10">Trigger a <span class="text-[var(--em)]">Conversation</span></h2>
+
+      <div class="grid lg:grid-cols-2 gap-8 items-start">
+
+        <!-- form -->
+        <form id="contactForm" class="card glow-em p-6 md:p-7 space-y-5" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <label class="block">
+              <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ whoami — name</span>
+              <input id="cf-name" name="name" type="text" placeholder="Jane Ops" autocomplete="name"
+                     class="w-full bg-[var(--panel2)] border border-[var(--line)] rounded-lg px-3.5 py-2.5 text-sm placeholder-[var(--dim)] focus:outline-none focus:border-[var(--em)] focus:ring-2 focus:ring-[rgba(52,211,153,.15)] transition-all" />
+            </label>
+            <label class="block">
+              <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ curl --email</span>
+              <input id="cf-email" name="email" type="email" placeholder="jane@infra.dev" autocomplete="email"
+                     class="w-full bg-[var(--panel2)] border border-[var(--line)] rounded-lg px-3.5 py-2.5 text-sm placeholder-[var(--dim)] focus:outline-none focus:border-[var(--em)] focus:ring-2 focus:ring-[rgba(52,211,153,.15)] transition-all" />
+            </label>
+          </div>
+          <label class="block">
+            <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ describe issue — message</span>
+            <textarea id="cf-message" name="message" rows="4" placeholder="Role, project, collaboration, or a debugging war story…"
+                      class="w-full bg-[var(--panel2)] border border-[var(--line)] rounded-lg px-3.5 py-2.5 text-sm placeholder-[var(--dim)] focus:outline-none focus:border-[var(--em)] focus:ring-2 focus:ring-[rgba(52,211,153,.15)] transition-all resize-none"></textarea>
+          </label>
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button type="submit" id="sendBtn"
+                    class="mono text-[12px] tracking-[.16em] px-6 py-3 rounded-lg bg-[var(--em)] text-[#04121a] font-bold hover:shadow-[0_0_26px_-4px_rgba(52,211,153,.8)] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
+              ▶ DEPLOY MESSAGE
+            </button>
+            <span id="formStatus" class="mono text-[11px] text-[var(--mut)]">awaiting payload…</span>
+          </div>
+
+          <div class="flex flex-wrap gap-x-5 gap-y-2 pt-2 border-t border-[var(--line)]">
+            <a href="https://github.com/" title="Replace with your GitHub profile URL" class="mono text-[12px] text-[var(--mut)] hover:text-[var(--cy)] transition-colors">⎇ github</a>
+            <a href="https://www.linkedin.com/" title="Replace with your LinkedIn URL" class="mono text-[12px] text-[var(--mut)] hover:text-[var(--cy)] transition-colors">in · linkedin</a>
+            <a href="mailto:you@example.com" title="Replace with your email" class="mono text-[12px] text-[var(--mut)] hover:text-[var(--cy)] transition-colors">@ email</a>
+          </div>
+        </form>
+
+        <!-- payload preview -->
+        <div class="mono text-[12px]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[var(--dim)] tracking-[.15em]">request preview</span>
+            <span class="text-[var(--em)] text-[10px] tracking-[.15em]">LIVE · updating</span>
+          </div>
+          <pre id="payloadPre"
+               class="bg-[#060a10] border border-[var(--line)] rounded-xl p-5 leading-relaxed text-[12.5px] text-[var(--mut)] overflow-x-auto shadow-[inset_0_0_40px_rgba(0,0,0,.5)]">
+{
+  "endpoint" : "/api/v1/contact",
+  "method"   : "POST",
+  "headers"  : { "x-repo": "shayal.dev" },
+  "payload"  : { "_placeholder": "type in the form →" }
+}</pre>
+          <div class="mt-4 flex items-center gap-2 text-[11px] text-[var(--dim)]">
+            <span class="live-dot"></span> endpoint healthy · response SLA &lt; 24h · every message gets a reply
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-[var(--line)] py-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center gap-3 justify-between mono text-[11px] text-[var(--dim)]">
+      <span>© 2026 Shayal Vaghasiya · engineered with deterministic precision</span>
+      <span class="flex items-center gap-2"><span class="live-dot"></span> all systems operational</span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ================= AWS ARCHITECTURE MODAL ================= -->
+<div id="awsModal" class="hidden fixed inset-0 z-[70] items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="AWS 3-tier architecture diagram">
+  <div class="absolute inset-0 bg-[#04070c]/80 backdrop-blur-sm" data-close></div>
+  <div class="relative w-full max-w-3xl max-h-[88vh] overflow-y-auto card !bg-[var(--panel2)] p-5 md:p-7 shadow-[0_40px_120px_-30px_rgba(0,0,0,.9)]">
+    <div class="flex items-center justify-between mb-5">
+      <span class="mono text-[11px] tracking-[.18em] text-[var(--cy)]">▦ INFRA_VIEW — scalable &amp; secure 3-TIER</span>
+      <button onclick="closeModal()" class="mono text-[11px] text-[var(--mut)] hover:text-[var(--rs)] transition-colors" aria-label="Close diagram">[ ESC / ✕ ]</button>
+    </div>
+
+    <!-- deploy lane -->
+    <div class="d-node mono text-[10.5px] tracking-[.08em] text-[var(--em)] mb-4 !py-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span>github-actions</span><span class="text-[var(--dim)]">→</span>
+      <span>terraform plan ✓</span><span class="text-[var(--dim)]">→</span>
+      <span>terraform apply ✓</span><span class="text-[var(--dim)]">→</span>
+      <span>ecs deploy</span><span class="text-[var(--dim)]">→</span>
+      <span>rds migration</span>
+    </div>
+
+    <div class="d-conn"><span>▼</span></div>
+
+    <div class="d-node mono text-[11px] text-center text-[var(--cy)] bg-[rgba(34,211,238,.05)]">
+      <span class="mr-2">🌐</span>INTERNET — users / 3rd-party clients
+    </div>
+
+    <div class="d-conn"><span>▼ route53 · dns</span></div>
+
+    <div class="d-node flex items-center gap-3 mono text-[11px] text-[var(--tx)]">
+      <span class="text-lg">⇄</span>
+      <div>
+        <p class="font-bold text-[12.5px]">Application Load Balancer — edge · TLS</p>
+        <p class="text-[var(--mut)] text-[10.5px]">public · spans 2 AZ · listener :443 → target group</p>
+      </div>
+    </div>
+
+    <div class="d-conn"><span>▼</span></div>
+
+    <!-- VPC -->
+    <div class="border border-[rgba(34,211,238,.3)] rounded-xl p-4 bg-[rgba(34,211,238,.03)]">
+      <p class="mono text-[10px] tracking-[.22em] text-[var(--cy)] mb-3">VPC — 10.0.0.0/16 <span class="text-[var(--dim)] normal-case tracking-normal">· terraform-managed · moduleized</span></p>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div class="space-y-3">
+          <div class="d-node bg-[rgba(52,211,153,.04)]">
+            <p class="mono text-[10px] tracking-[.12em] text-[var(--em)] mb-1.5">PUBLIC SUBNETS · 2 AZ</p>
+            <p class="mono text-[10.5px] text-[var(--mut)]">10.0.1.0/24 · 10.0.2.0/24<br />eip · nat gateway · bastion</p>
+          </div>
+          <div class="d-node bg-[rgba(52,211,153,.04)]">
+            <p class="mono text-[10px] tracking-[.12em] text-[var(--em)] mb-1.5">ECS CLUSTER — PRIVATE</p>
+            <p class="mono text-[10.5px] text-[var(--mut)]">fargate · 6 microservices<br />auto-scaling · rolling deploys</p>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="d-node bg-[rgba(251,191,36,.04)]">
+            <p class="mono text-[10px] tracking-[.12em] text-[var(--am)] mb-1.5">RDS — MULTI-AZ · PRIVATE</p>
+            <p class="mono text-[10.5px] text-[var(--mut)]">postgres · replicas across AZ<br />encrypted · automated backups</p>
+          </div>
+          <div class="d-node bg-[rgba(167,139,250,.04)]">
+            <p class="mono text-[10px] tracking-[.12em] text-[var(--vi)] mb-1.5">CLOUDWATCH OBSERVABILITY</p>
+            <p class="mono text-[10.5px] text-[var(--mut)]">center metrics · log groups<br />ecs container insights · alerts</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="mono text-[10px] text-[var(--dim)] mt-4 leading-relaxed">
+      ▍guardrails: security groups scoped by source/service · IAM least-privilege roles per task · RDS &amp; cache in private
+      tier only · drift detected by terraform plan in PR checks.
+    </p>
+  </div>
+</div>
+
+<!-- ================= FLOATING TERMINAL ================= -->
+<aside id="termWrap" class="fixed bottom-4 right-4 z-[60]" aria-label="Interactive CLI terminal">
+  <div id="termHead" class="w-[min(92vw,380px)] rounded-t-xl border border-b-0 border-[var(--line2)] bg-[var(--panel2)] px-4 h-9 flex items-center gap-2 cursor-pointer select-none hover:border-[var(--cy)] transition-colors group">
+    <span class="w-2.5 h-2.5 rounded-full bg-[var(--rs)] opacity-80 group-hover:opacity-100"></span>
+    <span class="w-2.5 h-2.5 rounded-full bg-[var(--am)] opacity-80 group-hover:opacity-100"></span>
+    <span class="w-2.5 h-2.5 rounded-full bg-[var(--em)] opacity-80 group-hover:opacity-100"></span>
+    <span class="ml-2 mono text-[11px] text-[var(--mut)]">shayal@portfolio — zsh</span>
+    <span class="ml-auto mono text-[10px] text-[var(--dim)] group-hover:text-[var(--cy)] transition-colors" id="termToggleLabel">▲ / ^</span>
+  </div>
+  <div id="termBody" class="hidden rounded-b-xl border border-[var(--line2)] bg-[#060a10]/95 backdrop-blur">
+    <div id="termOut" class="h-64 overflow-y-auto px-4 py-3 mono text-[12px] leading-[1.65] text-[var(--tx)]"></div>
+    <div class="flex items-center gap-2 px-4 pb-3 mono text-[12px]">
+      <span class="t-hi shrink-0">shayal@portfolio</span><span class="text-[var(--mut)]">:</span><span class="t-c">~$</span>
+      <input id="termIn" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal input"
+             class="flex-1 bg-transparent outline-none text-[var(--tx)] placeholder-[var(--dim)] caret-[var(--cy)]"
+             placeholder="type 'help' and press Enter" />
+    </div>
+  </div>
+</aside>
+
+<!-- toasts -->
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ============================================================
+   PORTFOLIO RUNTIME — vanilla JS, zero deps.
+   Modules: boot · status ticker · hero canvas · typewriter ·
+   counters · skills graph · scrollspy · terminal · modal ·
+   contact form · toasts
+============================================================ */
+(function () {
+  const $  = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const esc = (s) => String(s).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+  /* ---------- 1. BOOT OVERLAY ---------- */
+  (function boot() {
+    const ov = $('#boot'); if (!ov) return;
+    const lines = ['&gt; portfolio-shell v2.4.1',
+                   '&gt; boot: loading kernel modules…',
+                   '&gt; mount: /roles/devops · /skills/ci-cd · /exp/wipro-nxp',
+                   '&gt; init: system ready — have a look around.'];
+    const log = $('#bootLog'); let i = 0;
+    const skip = () => { clearInterval(t); $('#boot').classList.add('off'); setTimeout(() => $('#boot').remove(), 600); };
+    const t = setInterval(() => {
+      log.innerHTML = lines[i] + ' _'; i++;
+      if (i >= lines.length) { clearInterval(t); setTimeout(() => ov.classList.add('off'), 380); setTimeout(() => ov.remove(), 1000); }
+    }, reduced ? 0 : 240);
+    ov.addEventListener('click', skip);
+  })();
+
+  /* ---------- 2. STATUS BAR TICKER ---------- */
+  (function ticker() {
+    const lat = $('#latency'), up = $('#uptime'), clock = $('#clock');
+    const start = Date.now();
+    setInterval(() => {
+      const s = Math.floor((Date.now() - start) / 1000);
+      up.textContent = `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m ${s % 60}s`;
+      const d = new Date();
+      clock.textContent = [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()].map(n => String(n).padStart(2, '0')).join(':');
+    }, 1000);
+    setInterval(() => { lat.textContent = (7 + Math.floor(Math.random() * 18)) + 'ms'; }, 2600);
+  })();
+
+  /* ---------- 3. HERO PIPELINE CANVAS ---------- */
+  (function heroCanvas() {
+    const cv = $('#pipeline'), hero = $('#hero');
+    if (!cv || !hero) return;
+    const ctx = cv.getContext('2d');
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    let W = 0, H = 0, segs = [], total = 0, dash = 0;
+    // serpentine pipeline route (fractions of the hero box)
+    const WAY = [[0.0, .80], [.30, .80], [.30, .28], [.62, .28], [.62, .68], [1.0, .68]];
+    const NODE_C = ['#22d3ee', '#34d399', '#fbbf24', '#22d3ee', '#34d399', '#a78bfa'];
+    const px = (p) => [p[0] * W, p[1] * H];
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    function build() {
+      segs = []; total = 0;
+      for (let i = 0; i < WAY.length - 1; i++) {
+        const [ax, ay] = px(WAY[i]), [bx, by] = px(WAY[i + 1]);
+        const len = Math.hypot(bx - ax, by - ay);
+        segs.push({ ax, ay, bx, by, len }); total += len;
+      }
+    }
+    function atDist(d) {
+      let rem = d;
+      for (const s of segs) {
+        if (rem <= s.len) {
+          const t = s.len ? rem / s.len : 0;
+          return [lerp(s.ax, s.bx, t), lerp(s.ay, s.by, t)];
+        }
+        rem -= s.len;
+      }
+      const l = segs[segs.length - 1];
+      return [l.bx, l.by];
+    }
+    function resize() {
+      const r = hero.getBoundingClientRect();
+      W = r.width; H = r.height;
+      cv.width = W * dpr; cv.height = H * dpr;
+      cv.style.width = W + 'px'; cv.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build();
+    }
+    resize();
+    addEventListener('resize', () => { resize(); if (reduced) drawStatic(); });
+
+    const COLORS = ['#22d3ee', '#34d399', '#fbbf24', '#a78bfa'];
+    const pulses = Array.from({ length: 16 }, () => ({
+      t: Math.random(), sp: .00035 + Math.random() * .00075,
+      c: COLORS[Math.floor(Math.random() * COLORS.length)],
+      r: 1.5 + Math.random() * 2
+    }));
+
+    function drawGrid() {
+      ctx.strokeStyle = 'rgba(122,148,182,.04)'; ctx.lineWidth = 1;
+      const step = 48;
+      ctx.beginPath();
+      for (let x = 0; x < W; x += step) { ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); }
+      for (let y = 0; y < H; y += step) { ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); }
+      ctx.stroke();
+    }
+    function drawPath() {
+      ctx.beginPath();
+      ctx.moveTo(segs[0].ax, segs[0].ay);
+      for (const s of segs) ctx.lineTo(s.bx, s.by);
+      ctx.strokeStyle = 'rgba(34,211,238,.16)'; ctx.lineWidth = 2;
+      ctx.setLineDash([5, 9]); ctx.lineDashOffset = -dash; ctx.stroke(); ctx.setLineDash([]);
+      // nodes
+      WAY.forEach((p, i) => {
+        const [x, y] = px(p);
+        ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+        ctx.strokeStyle = NODE_C[i % NODE_C.length]; ctx.globalAlpha = .5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x, y, 1.6, 0, Math.PI * 2); ctx.fillStyle = NODE_C[i % NODE_C.length]; ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+    }
+    function frame(ts) {
+      dash = (dash + 0.03) % 40;
+      ctx.clearRect(0, 0, W, H);
+      drawGrid(); drawPath();
+      for (const p of pulses) {
+        p.t += p.sp * (16); // ~1 update/frame
+        if (p.t > 1) p.t -= 1;
+        const [x, y] = atDist(p.t * total);
+        ctx.beginPath(); ctx.arc(x, y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.c; ctx.shadowColor = p.c; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
+      }
+      requestAnimationFrame(frame);
+    }
+    function drawStatic() {
+      ctx.clearRect(0, 0, W, H); drawGrid(); drawPath();
+      for (const p of pulses) { const [x, y] = atDist(p.t * total); ctx.beginPath(); ctx.arc(x, y, p.r, 0, 7); ctx.fillStyle = p.c; ctx.fill(); }
+    }
+    if (reduced) { drawStatic(); } else { requestAnimationFrame(frame); }
+  })();
+
+  /* ---------- 4. SPOTLIGHT + TYPEWRITER ---------- */
+  (function micro() {
+    const hero = $('#hero'), spot = $('#spot');
+    if (hero && spot && !reduced) {
+      hero.addEventListener('mousemove', (e) => {
+        const r = hero.getBoundingClientRect();
+        spot.style.setProperty('--mx', e.clientX - r.left + 'px');
+        spot.style.setProperty('--my', e.clientY - r.top + 'px');
+      });
+    }
+    const tw = $('#typewriter'); if (!tw) return;
+    const words = ['terraform', 'docker', 'jenkins', 'aws', 'gcp', 'prometheus', 'grafana', 'github-actions', 'linux'];
+    if (reduced) { tw.textContent = '$ stack ' + words.join(' · '); return; }
+    let wi = 0, ci = 1, del = false;
+    tw.textContent = '$ stack ' + words[0][0];
+    (function type() {
+      const w = words[wi];
+      if (!del) {
+        ci++;
+        if (ci > w.length) { del = true; return setTimeout(type, 620); }
+      } else {
+        ci--;
+        if (ci <= 0) { del = false; wi = (wi + 1) % words.length; }
+      }
+      tw.textContent = '$ stack ' + w.slice(0, ci);
+      setTimeout(type, del ? 34 : 90);
+    })();
+  })();
+
+  /* ---------- 5. HERO DEPLOY FEED ---------- */
+  (function feed() {
+    const el = $('#feed'); if (!el) return;
+    const LINES = [
+      '▸ provisioning vpc 10.0.0.0/16 … <span class="text-[var(--em)]">ok</span>',
+      '▸ terraform apply — 42 resources <span class="text-[var(--em)]">complete</span>',
+      '▸ ecs cluster <span class="text-[var(--cy)]">prod</span> — 2 of 6 tasks healthy',
+      '▸ cloudwatch alarm <span class="text-[var(--am)]">cpu > 75%</span> — none firing',
+      '▸ github actions — 214 runs · <span class="text-[var(--em)]">0 failures</span>',
+      '▸ telegraf → prometheus → grafana <span class="text-[var(--em)]">synced</span>'
+    ];
+    let i = 0;
+    function draw() {
+      el.innerHTML = '';
+      for (let k = 0; k < 5; k++) {
+        const line = LINES[(i - k + LINES.length * 2) % LINES.length];
+        const d = document.createElement('div');
+        d.className = 'feed-line'; d.innerHTML = line;
+        el.appendChild(d);
+      }
+      i++;
+    }
+    draw();
+    if (!reduced) setInterval(draw, 2600);
+  })();
+
+  /* ---------- 6. METRIC COUNTERS ---------- */
+  (function counters() {
+    if (reduced) { $$('[data-count]').forEach(el => el.textContent = el.dataset.count); return; }
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (e.isIntersecting) {
+          animate(e.target); io.unobserve(e.target);
+        }
+      });
+    }, { threshold: .4 });
+    function animate(el) {
+      const target = +el.dataset.count, t0 = performance.now(), dur = 1500;
+      (function step(t) {
+        const p = Math.min(1, (t - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(step);
+      })(t0);
+    }
+    $$('[data-count]').forEach(el => io.observe(el));
+  })();
+
+  /* ---------- 7. SKILLS GRAPH (rendered from data) ---------- */
+  (function skills() {
+    const DATA = [
+      { cat: 'languages', label: 'LANGUAGES', icon: '⌘', accent: '', items: [
+        { n: 'Python',    d: 'Automation · data tooling' },
+        { n: 'Bash',      d: 'Shell orchestration' } ] },
+      { cat: 'cicd', label: 'CI/CD & AUTOMATION', icon: '⚙', accent: 'em', items: [
+        { n: 'Jenkins',        d: 'CI orchestration · shared libs' },
+        { n: 'GitHub Actions', d: 'Pipelines-as-code' },
+        { n: 'Bitbucket',      d: 'PR & merge checks' },
+        { n: 'Git',            d: 'VCS · branching · hooks' } ] },
+      { cat: 'infra', label: 'INFRA & CLOUD', icon: '☁', accent: 'am', items: [
+        { n: 'Terraform', d: 'Infrastructure-as-code' },
+        { n: 'AWS',       d: 'Cloud infrastructure' },
+        { n: 'GCP',       d: 'Cloud infrastructure' },
+        { n: 'Docker',    d: 'Containers · images' },
+        { n: 'Linux',     d: 'Sysadmin · performance tuning' } ] },
+      { cat: 'obs', label: 'OBSERVABILITY & SECURITY', icon: '◉', accent: 'vi', items: [
+        { n: 'Grafana',    d: 'Dashboards & alerts' },
+        { n: 'Prometheus', d: 'Metrics & scraping' },
+        { n: 'Telegraf',   d: 'Metrics ingestion' },
+        { n: 'CloudWatch', d: 'AWS observability' },
+        { n: 'Coverity',   d: 'Static analysis' },
+        { n: 'Black Duck', d: 'SCA · license compliance' },
+        { n: 'SonarQube',  d: 'Code quality gates' } ] }
+    ];
+    const grid = $('#skillsGrid'), tabs = $('#skillsTabs'); if (!grid) return;
+
+    // tabs
+    const TABDEFS = [['all', 'ALL'], ...DATA.map(d => [d.cat, d.label.replace(' & ', ' / ')])];
+    TABDEFS.forEach(([key, label]) => {
+      const b = document.createElement('button');
+      b.className = 'tab-btn' + (key === 'all' ? ' active' : '');
+      b.dataset.tab = key; b.setAttribute('role', 'tab'); b.textContent = label;
+      b.setAttribute('aria-pressed', key === 'all');
+      b.addEventListener('click', () => {
+        $$('.tab-btn', tabs).forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed', 'false'); });
+        b.classList.add('active'); b.setAttribute('aria-pressed', 'true');
+        $$('.skill-card', grid).forEach(c => {
+          c.classList.toggle('hidden', key !== 'all' && c.dataset.cat !== key);
+        });
+        requestAnimationFrame(drawLinks);
+      });
+      tabs.appendChild(b);
+    });
+
+    // cards
+    DATA.forEach((s, si) => {
+      const card = document.createElement('div');
+      card.className = 'skill-card card glow-cy p-5 flex flex-col';
+      card.dataset.cat = s.cat; card.dataset.accent = s.accent || 'cy';
+      card.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="hub-dot" style="width:10px;height:10px"></span>
+          <span class="mono text-[11px] tracking-[.18em] text-[var(--mut)]" data-hub>${s.icon} ${s.label}</span>
+          <span class="ml-auto mono text-[10px] text-[var(--dim)]">${s.items.length} nodes</span>
+        </div>
+        <div class="relative mt-5">
+          <svg class="link-layer"></svg>
+          <div class="flex flex-wrap gap-2">
+            ${s.items.map((it, i) => `<button class="chip" data-i="${i}" data-n="${esc(it.n)}" data-d="${esc(it.d)}">${esc(it.n)}</button>`).join('')}
+          </div>
+        </div>
+        <p class="skill-detail mono text-[10.5px] text-[var(--mut)] mt-4 pt-3 border-t border-[var(--line)] leading-relaxed">
+          ▍${esc(s.items[0].n)} — ${esc(s.items[0].d)}
+        </p>`;
+      grid.appendChild(card);
+    });
+
+    /* connector lines: hub bottom-centre → each chip centre */
+    function drawLinks() {
+      $$('.skill-card', grid).forEach(card => {
+        if (card.classList.contains('hidden')) return;
+        const svg = card.querySelector('.link-layer'), chips = $$('.chip', card);
+        if (!svg || !chips.length) return;
+        const a = svg.getBoundingClientRect();
+        svg.setAttribute('viewBox', `0 0 ${a.width} ${a.height}`);
+        const hubRect = card.querySelector('[data-hub]').closest('.flex').getBoundingClientRect();
+        const ox = hubRect.left + hubRect.width / 2 - a.left;
+        const oy = hubRect.bottom - a.top + 6;
+        svg.innerHTML = '';
+        chips.forEach((chip, i) => {
+          const r = chip.getBoundingClientRect();
+          const ex = r.left + r.width / 2 - a.left;
+          const ey = r.top + r.height / 2 - a.top;
+          const mx = (ox + ex) / 2, my = oy + (ey - oy) * .55;
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          line.setAttribute('d', `M${ox} ${oy} Q${mx} ${my} ${ex} ${ey}`);
+          line.setAttribute('data-i', String(i));
+          line.classList.add('link-line');
+          svg.appendChild(line);
+        });
+      });
+    }
+
+    // hover wiring
+    $$('.skill-card', grid).forEach(card => {
+      const chips = $$('.chip', card), lines = () => $$('.link-line', card);
+      const detail = card.querySelector('.skill-detail');
+      const show = (i) => {
+        lines().forEach(l => l.classList.toggle('lit', +l.dataset.i === i));
+        detail.innerHTML = `▍${esc(chips[i].dataset.n)} — ${esc(chips[i].dataset.d)}`;
+      };
+      card.addEventListener('mouseover', (e) => {
+        const c = e.target.closest('.chip'); if (c) show(+c.dataset.i);
+      });
+      card.addEventListener('mouseleave', () => { lines().forEach(l => l.classList.remove('lit')); });
+      chips.forEach((c, i) => c.addEventListener('click', () => show(i)));
+    });
+
+    drawLinks();
+    addEventListener('resize', () => requestAnimationFrame(drawLinks));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawLinks);
+  })();
+
+  /* ---------- 8. SCROLLSPY ---------- */
+  (function spy() {
+    const map = { hero: 'code', metrics: 'code', skills: 'build', experience: 'test', projects: 'deploy', education: 'monitor', contact: 'monitor' };
+    const order = ['code', 'build', 'test', 'deploy', 'monitor'];
+    function setActive(stage) {
+      $$('.nav-stage').forEach(el => {
+        const i = order.indexOf(el.dataset.stage), j = order.indexOf(stage);
+        el.classList.remove('active', 'done');
+        if (el.dataset.stage === stage) el.classList.add('active');
+        else if (j > -1 && i > -1 && i < j) el.classList.add('done');
+      });
+    }
+    const io = new IntersectionObserver((es) => {
+      es.forEach(e => { if (e.isIntersecting && map[e.target.id]) setActive(map[e.target.id]); });
+    }, { rootMargin: '-38% 0px -55% 0px' });
+    $$('main section[id]').forEach(s => io.observe(s));
+  })();
+
+  /* ---------- 9. TOASTS ---------- */
+  window.toast = function (msg, kind) {
+    const host = $('#toasts'); if (!host) return;
+    const t = document.createElement('div');
+    t.className = 'toast ' + (kind || 'ok');
+    t.setAttribute('role', 'status');
+    t.innerHTML = msg;
+    host.appendChild(t);
+    setTimeout(() => t.classList.add('show'), 15);
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 420); }, 3600);
+  };
+
+  /* ---------- 10. AWS MODAL ---------- */
+  window.openModal = function () {
+    const m = $('#awsModal'); m.classList.remove('hidden'); m.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeModal = function () {
+    const m = $('#awsModal'); m.classList.add('hidden'); m.classList.remove('flex');
+    document.body.style.overflow = '';
+  };
+  const modal = $('#awsModal');
+  modal.addEventListener('click', (e) => { if (e.target.hasAttribute('data-close')) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  /* ---------- 11. FLOATING TERMINAL ---------- */
+  (function terminal() {
+    const head = $('#termHead'), body = $('#termBody'), out = $('#termOut'), inp = $('#termIn');
+    const label = $('#termToggleLabel');
+    let open = false;
+    function toggle() {
+      open = !open;
+      body.classList.toggle('hidden', !open);
+      label.textContent = open ? '▼ / ^' : '▲ / ^';
+      if (open) { inp.focus(); out.scrollTop = out.scrollHeight; }
+    }
+    head.addEventListener('click', toggle);
+    document.addEventListener('keydown', (e) => {
+      const typing = e.target && e.target.closest && e.target.closest('input, textarea');
+      if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === '`' || e.key === 't') {
+        e.preventDefault(); toggle();
+        if (open) setTimeout(() => inp.focus(), 0);
+      }
+    });
+    const ln = (html, cls) => { const d = document.createElement('div'); d.className = 'tl' + (cls ? ' ' + cls : ''); d.innerHTML = html; out.appendChild(d); out.scrollTop = out.scrollHeight; };
+
+    const bootLines = [
+      'portfolio-shell v2.4.1 — interactive session',
+      'type <span class="text-[var(--am)]">help</span> to see commands, or press <span class="text-[var(--am)]">`</span> to toggle this panel.',
+      ''
+    ];
+    bootLines.forEach(b => ln(b));
+    inp.addEventListener('keydown', async (e) => {
+      if (e.key !== 'Enter') return;
+      const raw = inp.value; inp.value = '';
+      const parts = raw.trim().split(/\s+/), cmd = (parts[0] || '').toLowerCase(), arg = parts[1];
+      ln(`<span class="t-hi">shayal@portfolio</span><span class="text-[var(--mut)]">:~/</span><span class="t-c">$</span> ${esc(raw)}`);
+
+      switch (cmd) {
+        case '': break;
+        case 'help':
+          ln('<span class="text-[var(--cy)]">available commands:</span>');
+          ln('&nbsp;&nbsp;cat skills | cat experience | ls projects');
+          ln('&nbsp;&nbsp;run build | run deploy | status | pipeline');
+          ln('&nbsp;&nbsp;contact --send | whoami | clear | banner');
+          break;
+        case 'whoami': ln('Shayal Vaghasiya — DevOps / Platform Reliability Engineer'); break;
+        case 'cat':
+          if (arg === 'skills') {
+            ln('<span class="text-[var(--cy)]">skills registry:</span>');
+            [['⌘ languages','Python · Bash'],['⚙ ci/cd','Jenkins · GitHub Actions · Bitbucket · Git'],
+             ['☁ infra','Terraform · AWS · GCP · Docker · Linux'],
+             ['◉ obs/sec','Grafana · Prometheus · Telegraf · CloudWatch · Coverity · Black Duck · SonarQube']]
+              .forEach(([k, v]) => ln(`&nbsp;&nbsp;<span class="text-[var(--em)]">${k}</span> → ${v}`));
+          } else if (arg === 'experience') {
+            ln('&nbsp;&nbsp;wipro → sw engineer @ NXP client (2025-2026)');
+            ln('&nbsp;&nbsp;nxp → software intern (2024-2025)');
+          } else ln('<span class="t-warn">usage:</span> cat skills | cat experience');
+          break;
+        case 'ls': ln('&nbsp;&nbsp;aws-3tier/&nbsp;&nbsp;hil-ci-platform/&nbsp;&nbsp;tf-modules/&nbsp;&nbsp;monitoring/'); break;
+        case 'status':
+          ln(`● operational · latency ${7 + Math.floor(Math.random() * 18)}ms · build: <span class="text-[var(--em)]">PASSING</span> · sha 78f3a21`);
+          break;
+        case 'pipeline':
+          ln('code → skills/cluster → experience/log → projects/deploy → credentials/monitor');
+          break;
+        case 'run':
+          if (arg === 'build') {
+            ln('› pipeline: <span class="text-[var(--cy)]">firmware-ci / pre-merge</span> started…');
+            for (const s of ['clone sources','static analysis (Coverity)','sanity checks','image build']) {
+              ln(`&nbsp;&nbsp;** ${s} … <span class="text-[var(--cy)]">run</span>`);
+              if (!reduced) await sleep(280);
+            }
+            ln('<span class="text-[var(--em)]">✓ build SUCCESS</span> · gated · 6m 12s');
+          } else if (arg === 'deploy') {
+            ln('› deploying <span class="text-[var(--cy)]">aws-3tier</span> to prod…');
+            for (const s of ['terraform plan','terraform apply','ecs rolling update','rds migration']) {
+              ln(`&nbsp;&nbsp;** ${s} … <span class="text-[var(--cy)]">run</span>`);
+              if (!reduced) await sleep(280);
+            }
+            ln('<span class="text-[var(--em)]">✓ deployed</span> · https://shayal.dev ← live');
+          } else ln('<span class="t-warn">usage:</span> run build | run deploy');
+          break;
+        case 'contact':
+          $('#contact').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+          ln('<span class="text-[var(--em)]">✓ webhook → contact form armed — message me!</span>');
+          setTimeout(() => window.toast('⛨ contact section reached', 'ok'), 600);
+          break;
+        case 'clear': out.innerHTML = ''; break;
+        case 'banner':
+          ln('<span class="text-[var(--cy)]">SV</span> <span class="text-[var(--dim)]">— deterministic delivery, or nothing.</span>'); break;
+        case 'sudo':
+          ln('<span class="t-err">permission denied:</span> sudo is reserved for the infrastructure. (nice try)'); break;
+        default:
+          ln(`<span class="t-err">zsh: command not found: ${esc(cmd)}</span> — try <span class="text-[var(--am)]">help</span>`);
+      }
+      out.scrollTop = out.scrollHeight;
+    });
+  })();
+
+  /* ---------- 12. CONTACT FORM → LIVE PAYLOAD ---------- */
+  (function contact() {
+    const form = $('#contactForm'), pre = $('#payloadPre'), status = $('#formStatus'), btn = $('#sendBtn');
+    const fields = ['name', 'email', 'message'];
+    function render() {
+      const p = {};
+      fields.forEach(f => { p[f] = $('#cf-' + f).value || ''; });
+      const obj = {
+        endpoint: '/api/v1/contact',
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-repo': 'shayal.dev' },
+        payload: p
+      };
+      pre.textContent = JSON.stringify(obj, null, 2);
+    }
+    fields.forEach(f => $('#cf-' + f).addEventListener('input', render));
+    render();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const ok = fields.every(f => $('#cf-' + f).value.trim());
+      if (!ok) {
+        status.innerHTML = '<span class="text-[var(--rs)]">✗ validation failed — all fields required</span>';
+        window.toast('✗ payload rejected — missing fields', 'err');
+        return;
+      }
+      btn.disabled = true; btn.textContent = '◐ DEPLOYING…';
+      status.textContent = 'sending payload…';
+      if (!reduced) await sleep(900);
+      btn.disabled = false; btn.textContent = '▶ DEPLOY MESSAGE';
+      status.innerHTML = `<span class="text-[var(--em)]">⦿ last deploy: <b>202 Accepted</b> @ ${new Date().toLocaleTimeString()}</span>`;
+      window.toast('✓ 202 Accepted — webhook delivered. I\'ll reply within 24h.', 'ok');
+    });
+  })();
+})();
+</script>
+
+</body>
+</html>
