@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Shayal Vaghasiya — DevOps / Build and Release Automation Engineer</title>
-<meta name="description" content="Portfolio of a DevOps & Platform Engineer: CI/CD orchestration, infrastructure-as-code, cloud reliability and observability at scale." />
+<title>Shayal Vaghasiya — DevOps</title>
+<meta name="description" content="Portfolio of a DevOps / Build & Release Engineer: CI/CD orchestration, infrastructure-as-code, cloud reliability and observability at scale." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070b11'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2322d3ee' stroke-width='3'/%3E%3Ccircle cx='24' cy='24' r='4' fill='%2334d399'/%3E%3C/svg%3E" />
 
 <!-- Fonts -->
@@ -295,10 +295,10 @@
 
         <!-- left: boot text -->
         <div>
-          <p class="mono text-xs tracking-[.2em] text-[var(--cy)] mb-5"><span class="text-[var(--glob-ok,#34d399)]">✓</span> INIT_COMPLETE — role: devops · platform · reliability</p>
+          <p class="mono text-xs tracking-[.2em] text-[var(--cy)] mb-5"><span class="text-[var(--glob-ok,#34d399)]">✓</span> INIT_COMPLETE — role: devops / build &amp; release engineer</p>
           <h1 class="disp font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
             DevOps Engineer<br />
-            <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Platform Reliability &amp; Automation</span>
+            <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Build &amp; Release Engineer</span>
           </h1>
           <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
             Standardizing infrastructure, accelerating build pipelines, and scaling cloud and on-prem environments
@@ -331,7 +331,7 @@
               <span class="w-2.5 h-2.5 rounded-full bg-[var(--rs)] opacity-70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-[var(--am)] opacity-70"></span>
               <span class="w-2.5 h-2.5 rounded-full bg-[var(--em)] opacity-70"></span>
-              <span class="ml-2 text-[var(--dim)] tracking-[.15em]">deploy-feed — live</span>
+              <span class="ml-2 text-[var(--dim)] tracking-[.15em]">profile-feed — live</span>
               <span class="ml-auto text-[var(--em)]"><span class="live-dot inline-block"></span></span>
             </div>
             <div id="feed" class="space-y-1.5 text-[var(--mut)]"></div>
@@ -602,6 +602,11 @@
 
         <!-- form -->
         <form id="contactForm" class="card glow-em p-6 md:p-7 space-y-5" novalidate>
+          <!-- FormSubmit control fields (hidden) — deliver to inbox via formsubmit.co -->
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_subject" value="New portfolio message from {name}" />
+          <input type="hidden" name="_honey" value="" aria-hidden="true" tabindex="-1" autocomplete="off" />
           <div class="grid sm:grid-cols-2 gap-5">
             <label class="block">
               <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ whoami — name</span>
@@ -643,9 +648,9 @@
           <pre id="payloadPre"
                class="bg-[#060a10] border border-[var(--line)] rounded-xl p-5 leading-relaxed text-[12.5px] text-[var(--mut)] overflow-x-auto shadow-[inset_0_0_40px_rgba(0,0,0,.5)]">
 {
-  "endpoint" : "/api/v1/contact",
+  "endpoint" : "https://formsubmit.co/ajax/shayalvaghasiya@gmail.com",
   "method"   : "POST",
-  "headers"  : { "x-repo": "shayal.dev" },
+  "headers"  : { "content-type": "application/json", "x-repo": "shayal.dev" },
   "payload"  : { "_placeholder": "type in the form →" }
 }</pre>
           <div class="mt-4 flex items-center gap-2 text-[11px] text-[var(--dim)]">
@@ -931,12 +936,12 @@
   (function feed() {
     const el = $('#feed'); if (!el) return;
     const LINES = [
-      '▸ provisioning vpc 10.0.0.0/16 … <span class="text-[var(--em)]">ok</span>',
-      '▸ terraform apply — 42 resources <span class="text-[var(--em)]">complete</span>',
-      '▸ ecs cluster <span class="text-[var(--cy)]">prod</span> — 2 of 6 tasks healthy',
-      '▸ cloudwatch alarm <span class="text-[var(--am)]">cpu > 75%</span> — none firing',
-      '▸ github actions — 214 runs · <span class="text-[var(--em)]">0 failures</span>',
-      '▸ telegraf → prometheus → grafana <span class="text-[var(--em)]">synced</span>'
+      '▸ <span class="text-[var(--tx)]">shayal vaghasiya</span> — devops / build &amp; release engineer',
+      '▸ availability: <span class="text-[var(--em)] font-bold">● OPEN TO WORK</span> — hireable now',
+      '▸ freelance: <span class="text-[var(--am)] font-bold">■ accepting projects</span> · ci/cd · terraform · aws',
+      '▸ experience: <span class="text-[var(--cy)]">wipro → nxp</span> · hw-in-loop ci · 100+ pipelines',
+      '▸ socials: <span class="text-[var(--cy)]">github</span> · <span class="text-[var(--vi)]">linkedin</span> · <span class="text-[var(--em)]">email</span>',
+      '▸ messages: <span class="text-[var(--cy)]">contact form</span> → inbox · <span class="text-[var(--em)]">reply &lt; 24h</span>'
     ];
     let i = 0;
     function draw() {
@@ -1175,7 +1180,7 @@
           ln('&nbsp;&nbsp;run build | run deploy | status | pipeline');
           ln('&nbsp;&nbsp;contact --send | whoami | clear | banner');
           break;
-        case 'whoami': ln('Shayal Vaghasiya — DevOps / Platform Reliability Engineer'); break;
+        case 'whoami': ln('Shayal Vaghasiya — DevOps / Build &amp; Release Engineer'); break;
         case 'cat':
           if (arg === 'skills') {
             ln('<span class="text-[var(--cy)]">skills registry:</span>');
@@ -1237,7 +1242,7 @@
       const p = {};
       fields.forEach(f => { p[f] = $('#cf-' + f).value || ''; });
       const obj = {
-        endpoint: '/api/v1/contact',
+        endpoint: 'https://formsubmit.co/ajax/shayalvaghasiya@gmail.com',
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-repo': 'shayal.dev' },
         payload: p
@@ -1257,10 +1262,28 @@
       }
       btn.disabled = true; btn.textContent = '◐ DEPLOYING…';
       status.textContent = 'sending payload…';
-      if (!reduced) await sleep(900);
+      const payload = {};
+      fields.forEach(f => { payload[f] = $('#cf-' + f).value.trim(); });
+      try {
+        const res = await fetch('https://formsubmit.co/ajax/shayalvaghasiya@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.success !== 'false' && res.ok) {
+          status.innerHTML = `<span class="text-[var(--em)]">⦿ last deploy: <b>202 Accepted</b> @ ${new Date().toLocaleTimeString()}</span>`;
+          window.toast('✓ 202 Accepted — delivered to my inbox. I\'ll reply within 24h.', 'ok');
+          form.reset();
+          render();
+        } else {
+          throw new Error(json.message || 'request failed');
+        }
+      } catch (err) {
+        status.innerHTML = `<span class="text-[var(--rs)]">✗ delivery failed — ${esc(err.message)}</span>`;
+        window.toast('✗ delivery failed — email me directly: shayalvaghasiya@gmail.com', 'err');
+      }
       btn.disabled = false; btn.textContent = '▶ DEPLOY MESSAGE';
-      status.innerHTML = `<span class="text-[var(--em)]">⦿ last deploy: <b>202 Accepted</b> @ ${new Date().toLocaleTimeString()}</span>`;
-      window.toast('✓ 202 Accepted — webhook delivered. I\'ll reply within 24h.', 'ok');
     });
   })();
 })();
