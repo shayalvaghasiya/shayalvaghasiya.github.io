@@ -863,15 +863,8 @@
       '&gt; portfolio-shell v2.4.1',
       '&gt; boot: initializing devops engineer portfolio',
       '&gt; [ <span class="text-[var(--em)]"> OK </span> ] loading profile identity',
-      '&gt; [ <span class="text-[var(--em)]"> OK </span> ] loading navigation modules',
-      '&gt; mount: /experience/wipro-nxp',
-      '&gt; mount: /skills/languages · /skills/ci-cd',
-      '&gt; mount: /skills/cloud · /skills/observability',
-      '&gt; compile: assembling projects and delivery history',
-      '&gt; connect: github · linkedin · email',
+      '&gt; [ <span class="text-[var(--em)]"> OK </span> ] loading contact information',
       '&gt; service: starting interactive skill graph',
-      '&gt; service: starting pipeline visualizer',
-      '&gt; [ <span class="text-[var(--em)]"> OK </span> ] contact channel ready',
       '&gt; [ <span class="text-[var(--em)]"> OK </span> ] all portfolio modules loaded',
       '&gt; init: portfolio ready — have a look around.'
     ];
@@ -890,7 +883,7 @@
       });
       i++;
       if (i >= lines.length) { clearInterval(t); setTimeout(() => ov.classList.add('off'), 380); setTimeout(() => ov.remove(), 1000); }
-    }, reduced ? 0 : 360);
+    }, reduced ? 0 : 280);
     ov.addEventListener('click', skip);
   })();
 
