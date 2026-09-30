@@ -59,6 +59,11 @@
 
   .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
   .disp { font-family: 'Space Grotesk', Inter, sans-serif; }
+  .sr-only { /* visually hidden, available to screen readers (a11y) */
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
 
   /* ============ AMBIENT OVERLAYS ============ */
   .fx {
@@ -344,7 +349,7 @@
             <!-- round profile photo slot — drop ./profile.png in the repo root and it auto-fills -->
             <div class="avatar-slot" title="Profile photo slot — add ./profile.png to reveal">
               <div class="avatar-fall" aria-hidden="true">SV</div>
-              <img src="./profile.png" alt="Shayal Vaghasiya" onerror="this.remove()" />
+              <img src="./profile.png" alt="Shayal Vaghasiya" />
               <span class="avatar-ring" aria-hidden="true"></span>
               <span class="av-badge" title="open to work / available">✓</span>
             </div>
@@ -397,8 +402,8 @@
       </div>
     </div>
 
-    <a href="#skills" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-[var(--dim)] hover:text-[var(--cy)] transition-colors mono text-[11px] tracking-[.2em]" aria-label="Scroll to skills">
-      ▼ SCROLL
+    <a href="#skills" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-[var(--dim)] hover:text-[var(--cy)] transition-colors mono text-[11px] tracking-[.2em]">
+      <span aria-hidden="true">▼ </span>SCROLL<span class="sr-only"> to skills</span>
     </a>
   </section>
 
@@ -647,7 +652,7 @@
           <input type="hidden" name="_captcha" value="false" />
           <input type="hidden" name="_template" value="table" />
           <input type="hidden" name="_subject" value="New portfolio message from {name}" />
-          <input type="hidden" name="_honey" value="" aria-hidden="true" tabindex="-1" autocomplete="off" />
+          <input type="hidden" name="_honey" value="" aria-hidden="true" tabindex="-1" />
           <div class="grid sm:grid-cols-2 gap-5">
             <label class="block">
               <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ whoami — name</span>
@@ -820,6 +825,19 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const esc = (s) => String(s).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  // Deterministic PRNG (mulberry32). Used only for decorative animation (command
+  // rain / fake latency) — NOT for anything security-sensitive, and NOT a system
+  // PRNG. A fixed seed keeps the scene identical for every visitor.
+  const rand = (() => {
+    let s = 0x9e3779b9;
+    return () => {
+      s = (s + 0x6D2B79F5) | 0;
+      let t = s;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  })();
 
   /* ---------- 1. BOOT OVERLAY ---------- */
   (function boot() {
@@ -847,7 +865,7 @@
       const d = new Date();
       clock.textContent = [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()].map(n => String(n).padStart(2, '0')).join(':');
     }, 1000);
-    setInterval(() => { lat.textContent = (7 + Math.floor(Math.random() * 18)) + 'ms'; }, 2600);
+    setInterval(() => { lat.textContent = (7 + Math.floor(rand() * 18)) + 'ms'; }, 2600);
   })();
 
   /* ---------- 3. INTRO BACKGROUND — DEVOPS COMMAND RAIN ---------- */
@@ -878,21 +896,26 @@
     ];
     const ease = (t) => t * t * (3 - 2 * t);
     // alpha envelope over progress p (0..1): fade in → hold → fade out
-    const alpha = (p) => p < .14 ? ease(p / .14) : (p < .72 ? 1 : Math.max(0, 1 - ease((p - .72) / .28)));
+    // (independent statements rather than a nested ternary)
+    function alpha(p) {
+      if (p < .14) return ease(p / .14);
+      if (p < .72) return 1;
+      return Math.max(0, 1 - ease((p - .72) / .28));
+    }
 
     let parts = [];
 
     function spawn() {
-      const cmd = CMDS[(Math.random() * CMDS.length) | 0];
-      const size = 10 + Math.random() * 7;
+      const cmd = CMDS[Math.trunc(rand() * CMDS.length)];
+      const size = 10 + rand() * 7;
       const font = `600 ${size}px "JetBrains Mono", ui-monospace, monospace`;
       ctx.font = font;
       const w = Math.ceil(ctx.measureText(cmd[0]).width);
       return {
         text: cmd[0], color: cmd[1], size, font, w,
-        x: 12 + Math.random() * Math.max(20, W - w - 24),
-        T: 8000 + Math.random() * 11000,
-        age: Math.random() * 9000,
+        x: 12 + rand() * Math.max(20, W - w - 24),
+        T: 8000 + rand() * 11000,
+        age: rand() * 9000,
         startY: H + 46, endY: -58
       };
     }
@@ -938,11 +961,11 @@
       ctx.textBaseline = 'alphabetic';
       const rows = Math.max(5, Math.round(H / 110));
       for (let i = 0; i < rows; i++) {
-        const cmd = CMDS[(Math.random() * CMDS.length) | 0];
-        const size = 11 + Math.random() * 5;
+        const cmd = CMDS[Math.trunc(rand() * CMDS.length)];
+        const size = 11 + rand() * 5;
         ctx.font = `600 ${size}px "JetBrains Mono", ui-monospace, monospace`;
         const w = Math.ceil(ctx.measureText(cmd[0]).width);
-        const x = 12 + Math.random() * Math.max(20, W - w - 24);
+        const x = 12 + rand() * Math.max(20, W - w - 24);
         const y = 26 + i * (H - 60) / rows;
         ctx.globalAlpha = .18;
         ctx.fillStyle = cmd[1];
@@ -1241,7 +1264,7 @@
           break;
         case 'ls': ln('&nbsp;&nbsp;aws-3tier/&nbsp;&nbsp;hil-ci-platform/&nbsp;&nbsp;tf-modules/&nbsp;&nbsp;monitoring/'); break;
         case 'status':
-          ln(`● operational · latency ${7 + Math.floor(Math.random() * 18)}ms · build: <span class="text-[var(--em)]">PASSING</span> · sha 78f3a21`);
+          ln(`● operational · latency ${7 + Math.floor(rand() * 18)}ms · build: <span class="text-[var(--em)]">PASSING</span> · sha 78f3a21`);
           break;
         case 'pipeline':
           ln('code → skills/cluster → experience/log → projects/deploy → credentials/monitor');
@@ -1331,6 +1354,14 @@
       }
       btn.disabled = false; btn.textContent = '▶ DEPLOY MESSAGE';
     });
+  })();
+  /* ---------- 13. AVATAR FALLBACK ---------- */
+  (function avatar() {
+    // ./profile.png may be absent — remove the <img> cleanly instead of
+    // showing a broken image. (Kept off the element's inline onerror so the
+    // markup stays free of event handlers on non-interactive elements.)
+    const img = document.querySelector('.avatar-slot img');
+    if (img) img.addEventListener('error', () => img.remove());
   })();
 })();
 </script>
