@@ -277,12 +277,17 @@
   .toast.ok { border-color: rgba(52,211,153,.5); color: var(--em); box-shadow: 0 10px 30px -12px rgba(52,211,153,.4); }
   .toast.err { border-color: rgba(251,113,133,.5); color: var(--rs); box-shadow: 0 10px 30px -12px rgba(251,113,133,.4); }
 
-  /* cursor blink for typewriter */
+  /* cursor blink for the role animation */
   .cursor::after { content: "▋"; color: var(--cy); animation: blink 1s steps(1) infinite; margin-left: 2px; }
-  #typewriter { color: var(--em); font-size: 15px; font-weight: 600; letter-spacing: .04em; text-shadow: 0 0 14px rgba(52,211,153,.35); }
-  #typewriter::after { color: var(--em); }
-  #rolewriter { color: var(--cy); font-size: 15px; font-weight: 600; letter-spacing: .02em; text-shadow: 0 0 14px rgba(34,211,238,.35); min-height: 1.5em; }
+  #rolewriter { color: var(--cy); font-size: 18px; font-weight: 600; letter-spacing: .02em; text-shadow: 0 0 14px rgba(34,211,238,.35); min-height: 1.5em; }
   #rolewriter::after { color: var(--cy); }
+  #stackline {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .65rem;
+    color: var(--em); font-size: 13px; font-weight: 600; line-height: 1.8;
+    letter-spacing: .045em; text-shadow: 0 0 12px rgba(52,211,153,.22);
+  }
+  #stackline .stack-label { color: var(--dim); font-weight: 500; }
+  #stackline .stack-items { color: var(--em); }
   .intro-frame {
     padding: 2.5rem;
     border: 1px solid rgba(34,211,238,.3);
@@ -422,11 +427,14 @@
             </div>
             <div class="mt-4 mono cursor" id="rolewriter" aria-label="Professional roles">DevOps Engineer</div>
            <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
-            I build CI/CD pipelines, automate infrastructure and deployment workflows, and create reliable software delivery systems across
+            I build <span class="text-[var(--tx)]">CI/CD pipelines</span>, <span class="text-[var(--tx)]">automate infrastructure</span> and <span class="text-[var(--tx)]">release workflows</span>, and create reliable software delivery systems across
             <span class="text-[var(--tx)]">cloud and on-prem environments</span>.
           </p>
 
-            <div class="mt-4 mono cursor" id="typewriter" aria-label="Current tech stack">$ stack --list</div>
+            <div class="mt-4 mono" id="stackline" aria-label="Current tech stack">
+              <span class="stack-label">$ stack --list:</span>
+              <span class="stack-items">Python · Terraform · Docker · Jenkins · AWS · GCP · Prometheus · Grafana · GitHub Actions · Linux</span>
+            </div>
 
             <div class="mt-8 flex flex-wrap gap-3">
               <a href="#skills" class="mono text-[12px] tracking-[.16em] px-5 py-3 rounded-lg bg-[var(--cy)] text-[#04121a] font-bold hover:shadow-[0_0_28px_-4px_rgba(34,211,238,.8)] transition-all hover:-translate-y-0.5">
@@ -866,7 +874,7 @@
 'use strict';
 /* ============================================================
    PORTFOLIO RUNTIME — vanilla JS, zero deps.
-   Modules: boot · status ticker · intro canvas · typewriter ·
+   Modules: boot · status ticker · intro canvas · role animation ·
    counters · skills graph · scrollspy · terminal · modal ·
    contact form · toasts
 ============================================================ */
@@ -1053,30 +1061,13 @@
         spot.style.setProperty('--my', e.clientY - r.top + 'px');
       });
     }
-    const tw = $('#typewriter'); if (!tw) return;
-    const words = ['Python', 'terraform', 'docker', 'jenkins', 'AWS', 'GCP', 'prometheus', 'grafana', 'github-actions', 'linux'];
     const role = $('#rolewriter');
     const roles = ['DevOps Engineer', 'Build & Release Engineer', 'Cloud Infrastructure Engineer'];
-    if (reduced) {
-      tw.textContent = '$ stack ' + words.join(' · ');
-      if (role) role.textContent = roles.join(' · ');
-      return;
-    }
-    let wi = 0, ci = 1, del = false;
-    tw.textContent = '$ stack ' + words[0][0];
-    (function type() {
-      const w = words[wi];
-      if (!del) {
-        ci++;
-        if (ci > w.length) { del = true; return setTimeout(type, 620); }
-      } else {
-        ci--;
-        if (ci <= 0) { del = false; wi = (wi + 1) % words.length; }
-      }
-      tw.textContent = '$ stack ' + w.slice(0, ci);
-      setTimeout(type, del ? 34 : 90);
-    })();
     if (role) {
+      if (reduced) {
+        role.textContent = roles.join(' · ');
+        return;
+      }
       let ri = 0, rci = 1, rdel = false;
       role.textContent = roles[0][0];
       (function typeRole() {
