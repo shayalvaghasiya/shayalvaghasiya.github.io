@@ -280,6 +280,50 @@
   .cursor::after { content: "▋"; color: var(--cy); animation: blink 1s steps(1) infinite; margin-left: 2px; }
   #typewriter { color: var(--em); font-size: 15px; font-weight: 600; letter-spacing: .04em; text-shadow: 0 0 14px rgba(52,211,153,.35); }
   #typewriter::after { color: var(--em); }
+  .intro-frame {
+    padding: 2.5rem;
+    border: 1px solid rgba(34,211,238,.3);
+    border-radius: 18px;
+    background: rgba(5,18,24,.3);
+    box-shadow: inset 0 0 0 1px rgba(52,211,153,.08), 0 24px 70px -40px rgba(34,211,238,.45);
+  }
+
+  /* ============ MOBILE LAYOUT ============ */
+  @media (max-width: 767px) {
+    header .max-w-6xl { padding-inline: .75rem; gap: .5rem; }
+    header nav { min-width: 0; gap: 0; }
+    .nav-stage {
+      gap: .3rem; padding: .42rem .48rem; font-size: 9px; letter-spacing: .1em;
+    }
+    .nav-stage .dot { width: 5px; height: 5px; }
+    .nav-arrow { font-size: 8px; }
+
+    section { padding-block: 3.5rem; }
+    #intro {
+      min-height: auto; padding-top: 8rem; padding-bottom: 5rem;
+    }
+    #pipeline { opacity: .22; }
+    #intro .relative.max-w-6xl { padding-inline: 1rem; }
+    .intro-frame { padding: 1.25rem; border-radius: 14px; }
+
+    .card { padding: 1.1rem; }
+    .exp-card { margin-left: 2rem; }
+    .ring-sm { width: 64px; height: 64px; }
+    .ring-sm::before { inset: 6px; }
+    .ring-val-sm { font-size: 14px; }
+    .ring-val-sm small { font-size: 10px; }
+
+    #contact > .max-w-6xl > .grid > * { min-width: 0; }
+    #payloadPre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      padding: 1rem;
+      font-size: 11px;
+    }
+    #termWrap { right: .75rem; bottom: .75rem; }
+    #termHead { width: min(92vw, 380px); }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -353,60 +397,62 @@
     <div class="absolute inset-0" aria-hidden="true" style="background: radial-gradient(80% 60% at 70% 20%, rgba(34,211,238,.05), transparent 60%), radial-gradient(70% 50% at 15% 85%, rgba(52,211,153,.045), transparent 60%);"></div>
 
     <div class="relative max-w-6xl mx-auto px-4 w-full">
-      <div class="grid lg:grid-cols-[1.06fr_.94fr] gap-12 items-center">
+      <div class="intro-frame">
+        <div class="grid lg:grid-cols-[1.06fr_.94fr] gap-12 items-center">
 
-        <!-- left: boot text -->
-        <div>
-          <p class="mono text-xs tracking-[.2em] text-[var(--cy)] mb-5"><span class="text-[var(--glob-ok,#34d399)]">✓</span> INIT_COMPLETE — role: devops / build &amp; release engineer</p>
-          <div class="flex items-center gap-4 sm:gap-7 mb-1">
-            <!-- round profile photo slot — drop ./profile.png in the repo root and it auto-fills -->
-            <div class="avatar-slot" title="Profile photo">
-              <div class="avatar-fall" aria-hidden="true">SV</div>
-              <img src="./profile.jpg" alt="Shayal Vaghasiya" />
-              <span class="avatar-ring" aria-hidden="true"></span>
-              <span class="av-badge" title="open to work / available">✓</span>
+          <!-- left: boot text -->
+          <div>
+            <p class="mono text-xs tracking-[.2em] text-[var(--cy)] mb-5"><span class="text-[var(--glob-ok,#34d399)]">✓</span> INIT_COMPLETE — role: devops / build &amp; release engineer</p>
+            <div class="flex items-center gap-4 sm:gap-7 mb-1">
+              <!-- round profile photo slot — drop ./profile.png in the repo root and it auto-fills -->
+              <div class="avatar-slot" title="Profile photo">
+                <div class="avatar-fall" aria-hidden="true">SV</div>
+                <img src="./profile.jpg" alt="Shayal Vaghasiya" />
+                <span class="avatar-ring" aria-hidden="true"></span>
+                <span class="av-badge" title="open to work / available">✓</span>
+              </div>
+              <h1 class="disp font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
+                DevOps<br />
+                <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Engineer</span>
+              </h1>
             </div>
-            <h1 class="disp font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
-              DevOps<br />
-              <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Engineer</span>
-            </h1>
-          </div>
-          <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
-            I build reliable delivery systems that automate infrastructure, accelerate CI/CD, and connect
-            <span class="text-[var(--tx)]">on-prem environments</span> with
-            <span class="text-[var(--tx)]">cloud infrastructure-as-code</span>.
-          </p>
+            <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
+              I build reliable delivery systems that automate infrastructure, accelerate CI/CD, and connect
+              <span class="text-[var(--tx)]">on-prem environments</span> with
+              <span class="text-[var(--tx)]">cloud infrastructure-as-code</span>.
+            </p>
 
-          <div class="mt-4 mono cursor" id="typewriter" aria-label="Current tech stack">$ stack --list</div>
+            <div class="mt-4 mono cursor" id="typewriter" aria-label="Current tech stack">$ stack --list</div>
 
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#experience" class="mono text-[12px] tracking-[.16em] px-5 py-3 rounded-lg bg-[var(--cy)] text-[#04121a] font-bold hover:shadow-[0_0_28px_-4px_rgba(34,211,238,.8)] transition-all hover:-translate-y-0.5">
-              ▶ TRIGGER PIPELINE
-            </a>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href="#experience" class="mono text-[12px] tracking-[.16em] px-5 py-3 rounded-lg bg-[var(--cy)] text-[#04121a] font-bold hover:shadow-[0_0_28px_-4px_rgba(34,211,238,.8)] transition-all hover:-translate-y-0.5">
+                ▶ TRIGGER PIPELINE
+              </a>
+            </div>
           </div>
+
+          <!-- right: deploy feed console -->
+          <div class="hidden lg:block lg:w-full lg:-mt-14">
+            <div class="card glow-cy p-6 mono text-[12.5px] leading-relaxed shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
+              <div class="flex items-center gap-1.5 pb-3 border-b border-[var(--line)] mb-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-[var(--rs)] opacity-70"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-[var(--am)] opacity-70"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-[var(--em)] opacity-70"></span>
+                <span class="ml-2 text-[var(--dim)] tracking-[.15em]">profile-feed — live</span>
+                <span class="ml-auto text-[var(--em)]"><span class="live-dot inline-block"></span></span>
+              </div>
+              <div id="feed" class="space-y-2 text-[var(--mut)]"></div>
+              <div class="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap gap-1.5">
+                <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">terraform</span>
+                <span class="px-2 py-0.5 rounded bg-[rgba(52,211,153,.08)] text-[var(--em)]">github-actions</span>
+                <span class="px-2 py-0.5 rounded bg-[rgba(167,139,250,.08)] text-[var(--vi)]">docker</span>
+                <span class="px-2 py-0.5 rounded bg-[rgba(251,191,36,.08)] text-[var(--am)]">jenkins</span>
+                <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">Python</span>
+              </div>
+            </div>
+          </div>
+
         </div>
-
-        <!-- right: deploy feed console -->
-        <div class="hidden lg:block lg:w-full lg:-mt-14">
-          <div class="card glow-cy p-6 mono text-[12.5px] leading-relaxed shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
-            <div class="flex items-center gap-1.5 pb-3 border-b border-[var(--line)] mb-3">
-              <span class="w-2.5 h-2.5 rounded-full bg-[var(--rs)] opacity-70"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[var(--am)] opacity-70"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[var(--em)] opacity-70"></span>
-              <span class="ml-2 text-[var(--dim)] tracking-[.15em]">profile-feed — live</span>
-              <span class="ml-auto text-[var(--em)]"><span class="live-dot inline-block"></span></span>
-            </div>
-            <div id="feed" class="space-y-2 text-[var(--mut)]"></div>
-            <div class="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap gap-1.5">
-              <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">terraform</span>
-              <span class="px-2 py-0.5 rounded bg-[rgba(52,211,153,.08)] text-[var(--em)]">github-actions</span>
-              <span class="px-2 py-0.5 rounded bg-[rgba(167,139,250,.08)] text-[var(--vi)]">docker</span>
-              <span class="px-2 py-0.5 rounded bg-[rgba(251,191,36,.08)] text-[var(--am)]">jenkins</span>
-              <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">Python</span>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -655,7 +701,7 @@
       <div class="grid lg:grid-cols-2 gap-8 items-start">
 
         <!-- form -->
-        <form id="contactForm" class="card glow-em p-6 md:p-7 space-y-5" novalidate>
+        <form id="contactForm" class="card glow-em p-6 md:p-7 space-y-5 min-w-0" novalidate>
           <!-- FormSubmit control fields (hidden) — deliver to inbox via formsubmit.co -->
           <input type="hidden" name="_captcha" value="false" />
           <input type="hidden" name="_template" value="table" />
@@ -694,7 +740,7 @@
         </form>
 
         <!-- payload preview -->
-        <div class="mono text-[12px]">
+        <div class="mono text-[12px] min-w-0">
           <div class="flex items-center justify-between mb-2">
             <span class="text-[var(--dim)] tracking-[.15em]">request preview</span>
             <span class="text-[var(--em)] text-[10px] tracking-[.15em]">LIVE · updating</span>
