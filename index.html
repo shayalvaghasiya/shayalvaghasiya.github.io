@@ -281,6 +281,8 @@
   .cursor::after { content: "▋"; color: var(--cy); animation: blink 1s steps(1) infinite; margin-left: 2px; }
   #typewriter { color: var(--em); font-size: 15px; font-weight: 600; letter-spacing: .04em; text-shadow: 0 0 14px rgba(52,211,153,.35); }
   #typewriter::after { color: var(--em); }
+  #rolewriter { color: var(--cy); font-size: 15px; font-weight: 600; letter-spacing: .02em; text-shadow: 0 0 14px rgba(34,211,238,.35); min-height: 1.5em; }
+  #rolewriter::after { color: var(--cy); }
   .intro-frame {
     padding: 2.5rem;
     border: 1px solid rgba(34,211,238,.3);
@@ -415,10 +417,10 @@
                 <span class="av-badge" title="open to work / available">✓</span>
               </div>
               <h1 class="disp font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
-                DevOps<br />
-                <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Engineer</span>
+                <span class="bg-gradient-to-r from-[var(--cy)] via-[var(--em)] to-[var(--am)] bg-clip-text text-transparent">Shayal Vaghasiya</span>
               </h1>
             </div>
+            <div class="mt-4 mono cursor" id="rolewriter" aria-label="Professional roles">DevOps Engineer</div>
             <p class="mt-6 text-[15px] md:text-base text-[var(--mut)] max-w-xl leading-relaxed">
               I build reliable delivery systems that automate infrastructure, accelerate CI/CD, and connect
               <span class="text-[var(--tx)]">on-prem environments</span> with
@@ -1054,7 +1056,13 @@
     }
     const tw = $('#typewriter'); if (!tw) return;
     const words = ['Python', 'terraform', 'docker', 'jenkins', 'AWS', 'GCP', 'prometheus', 'grafana', 'github-actions', 'linux'];
-    if (reduced) { tw.textContent = '$ stack ' + words.join(' · '); return; }
+    const role = $('#rolewriter');
+    const roles = ['DevOps Engineer', 'Build & Release Engineer', 'Cloud Infrastructure Engineer'];
+    if (reduced) {
+      tw.textContent = '$ stack ' + words.join(' · ');
+      if (role) role.textContent = roles.join(' · ');
+      return;
+    }
     let wi = 0, ci = 1, del = false;
     tw.textContent = '$ stack ' + words[0][0];
     (function type() {
@@ -1069,13 +1077,29 @@
       tw.textContent = '$ stack ' + w.slice(0, ci);
       setTimeout(type, del ? 34 : 90);
     })();
+    if (role) {
+      let ri = 0, rci = 1, rdel = false;
+      role.textContent = roles[0][0];
+      (function typeRole() {
+        const current = roles[ri];
+        if (!rdel) {
+          rci++;
+          if (rci > current.length) { rdel = true; return setTimeout(typeRole, 900); }
+        } else {
+          rci--;
+          if (rci <= 0) { rdel = false; ri = (ri + 1) % roles.length; }
+        }
+        role.textContent = current.slice(0, rci);
+        setTimeout(typeRole, rdel ? 34 : 90);
+      })();
+    }
   })();
 
   /* ---------- 5. INTRO DEPLOY FEED (static — no rotation) ---------- */
   (function feed() {
     const el = $('#feed'); if (!el) return;
     const LINES = [
-      '▸ <span class="text-[var(--tx)]">shayal vaghasiya</span> — devops / build &amp; release engineer',
+      '▸ role: devops / build &amp; release engineer',
       '▸ experience: <span class="text-[var(--rs)] font-bold">2 years</span> across <span class="text-[var(--em)]">Wipro</span> &amp; <span class="text-[var(--em)]">NXP Semiconductors</span>',
       '▸ skills: <span class="text-[var(--cy)]">Python · Jenkins · Docker · Terraform</span>',
       '▸ projects: <span class="text-[var(--vi)]">5+</span> DevOps projects',
