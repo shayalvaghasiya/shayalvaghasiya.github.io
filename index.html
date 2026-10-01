@@ -167,6 +167,7 @@
   .nav-stage.done { color: var(--em); }
   .nav-stage.done .dot { background: var(--em); box-shadow: 0 0 6px var(--em); }
   .nav-arrow { color: var(--dim); font-size: 10px; }
+  .nav-arrow.done { color: var(--em); text-shadow: 0 0 8px rgba(52,211,153,.7); }
   .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
 
@@ -368,15 +369,17 @@
     </a>
 
     <nav class="ml-auto flex items-center gap-1 overflow-x-auto py-2 -my-2 no-scrollbar" aria-label="Pipeline navigation">
-      <a href="#intro" class="nav-stage" data-stage="code" title="Init — intro / system ready"><span class="dot"></span>CODE</a>
+      <a href="#intro" class="nav-stage" data-stage="intro" title="Intro — DevOps Engineer"><span class="dot"></span>INTRO</a>
       <span class="nav-arrow">▶</span>
-      <a href="#skills" class="nav-stage" data-stage="build" title="Build — skills & toolchain"><span class="dot"></span>BUILD</a>
+      <a href="#skills" class="nav-stage" data-stage="skills" title="Skills & Technologies"><span class="dot"></span>SKILLS</a>
       <span class="nav-arrow">▶</span>
-      <a href="#experience" class="nav-stage" data-stage="test" title="Test — execution history"><span class="dot"></span>TEST</a>
+      <a href="#experience" class="nav-stage" data-stage="experience" title="Experience — Execution Log"><span class="dot"></span>EXPERIENCE</a>
       <span class="nav-arrow">▶</span>
-      <a href="#projects" class="nav-stage" data-stage="deploy" title="Deploy — projects & stacks"><span class="dot"></span>DEPLOY</a>
+      <a href="#projects" class="nav-stage" data-stage="projects" title="Projects — Shipped Stacks"><span class="dot"></span>PROJECTS</a>
       <span class="nav-arrow">▶</span>
-      <a href="#education" class="nav-stage" data-stage="monitor" title="Monitor — credentials & certs"><span class="dot"></span>MONITOR</a>
+      <a href="#education" class="nav-stage" data-stage="education" title="Education — Verified Credentials"><span class="dot"></span>EDUCATION</a>
+      <span class="nav-arrow">▶</span>
+      <a href="#contact" class="nav-stage" data-stage="contact" title="Contact — Open Webhook"><span class="dot"></span>CONTACT</a>
     </nav>
 
     <a href="./resume.pdf" download="shayal-vaghasiya-resume.pdf" class="hidden md:inline-flex shrink-0 ml-2 mono text-[11px] tracking-[.14em] px-4 py-2 rounded-lg bg-[var(--em)] text-[#04121a] font-bold hover:shadow-[0_0_20px_-2px_rgba(52,211,153,.7)] transition-all">
@@ -1233,15 +1236,17 @@
 
   /* ---------- 8. SCROLLSPY ---------- */
   (function spy() {
-    const map = { intro: 'code', skills: 'build', experience: 'test', projects: 'deploy', education: 'monitor', contact: 'monitor' };
-    const order = ['code', 'build', 'test', 'deploy', 'monitor'];
+    const map = { intro: 'intro', skills: 'skills', experience: 'experience', projects: 'projects', education: 'education', contact: 'contact' };
+    const order = ['intro', 'skills', 'experience', 'projects', 'education', 'contact'];
     function setActive(stage) {
+      const activeIndex = order.indexOf(stage);
       $$('.nav-stage').forEach(el => {
         const i = order.indexOf(el.dataset.stage), j = order.indexOf(stage);
         el.classList.remove('active', 'done');
         if (el.dataset.stage === stage) el.classList.add('active');
         else if (j > -1 && i > -1 && i < j) el.classList.add('done');
       });
+      $$('.nav-arrow').forEach((el, i) => el.classList.toggle('done', i < activeIndex));
     }
     const io = new IntersectionObserver((es) => {
       es.forEach(e => { if (e.isIntersecting && map[e.target.id]) setActive(map[e.target.id]); });
