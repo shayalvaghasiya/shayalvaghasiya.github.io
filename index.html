@@ -704,7 +704,7 @@
       <div class="grid lg:grid-cols-2 gap-8 items-start">
 
         <!-- form -->
-        <form id="contactForm" class="card glow-em p-6 md:p-7 space-y-5 min-w-0" novalidate>
+        <form id="contactForm" action="https://formsubmit.co/ajax/shayalvaghasiya@gmail.com" method="POST" class="card glow-em p-6 md:p-7 space-y-5 min-w-0">
           <!-- FormSubmit control fields (hidden) — deliver to inbox via formsubmit.co -->
           <input type="hidden" name="_captcha" value="false" />
           <input type="hidden" name="_template" value="table" />
@@ -713,18 +713,18 @@
           <div class="grid sm:grid-cols-2 gap-5">
             <label class="block">
               <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ whoami — name</span>
-              <input id="cf-name" name="name" type="text" placeholder="Jane Ops" autocomplete="name"
+              <input id="cf-name" name="name" type="text" placeholder="Jane Ops" autocomplete="name" required
                      class="w-full bg-[var(--panel2)] border border-[var(--line)] rounded-lg px-3.5 py-2.5 text-sm placeholder-[var(--dim)] focus:outline-none focus:border-[var(--em)] focus:ring-2 focus:ring-[rgba(52,211,153,.15)] transition-all" />
             </label>
             <label class="block">
               <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ curl --email</span>
-              <input id="cf-email" name="email" type="email" placeholder="jane@infra.dev" autocomplete="email"
+              <input id="cf-email" name="email" type="email" placeholder="jane@infra.dev" autocomplete="email" required
                      class="w-full bg-[var(--panel2)] border border-[var(--line)] rounded-lg px-3.5 py-2.5 text-sm placeholder-[var(--dim)] focus:outline-none focus:border-[var(--em)] focus:ring-2 focus:ring-[rgba(52,211,153,.15)] transition-all" />
             </label>
           </div>
           <label class="block">
             <span class="mono text-[10px] tracking-[.15em] text-[var(--mut)] block mb-1.5">$ describe issue — message</span>
-            <textarea id="cf-message" name="message" rows="4" placeholder="Role, project, collaboration, or a debugging war story…"
+            <textarea id="cf-message" name="message" rows="4" placeholder="Role, project, collaboration, or a debugging war story…" required minlength="10"
                       class="w-full bg-[var(--panel2)] border border-[var(--line)] rounded-lg px-3.5 py-2.5 text-sm placeholder-[var(--dim)] focus:outline-none focus:border-[var(--em)] focus:ring-2 focus:ring-[rgba(52,211,153,.15)] transition-all resize-none"></textarea>
           </label>
           <div class="flex flex-wrap items-center gap-3 pt-1">
@@ -1395,8 +1395,9 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const ok = fields.every(f => $('#cf-' + f).value.trim());
+      const ok = form.checkValidity() && fields.every(f => $('#cf-' + f).value.trim());
       if (!ok) {
+        form.reportValidity();
         status.innerHTML = '<span class="text-[var(--rs)]">✗ validation failed — all fields required</span>';
         window.toast('✗ payload rejected — missing fields', 'err');
         return;
@@ -1412,7 +1413,7 @@
           body: JSON.stringify(payload)
         });
         const json = await res.json();
-        if (json.success !== 'false' && res.ok) {
+        if (res.ok && (json.success === true || json.success === 'true')) {
           status.innerHTML = `<span class="text-[var(--em)]">⦿ last deploy: <b>202 Accepted</b> @ ${new Date().toLocaleTimeString()}</span>`;
           window.toast('✓ 202 Accepted — delivered to my inbox. I\'ll reply within 24h.', 'ok');
           form.reset();
