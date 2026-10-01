@@ -445,13 +445,6 @@
                 <span class="ml-auto text-[var(--em)]"><span class="live-dot inline-block"></span></span>
               </div>
               <div id="feed" class="space-y-2 text-[var(--mut)]"></div>
-              <div class="mt-4 pt-3 border-t border-[var(--line)] flex flex-wrap gap-1.5">
-                <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">terraform</span>
-                <span class="px-2 py-0.5 rounded bg-[rgba(52,211,153,.08)] text-[var(--em)]">github-actions</span>
-                <span class="px-2 py-0.5 rounded bg-[rgba(167,139,250,.08)] text-[var(--vi)]">docker</span>
-                <span class="px-2 py-0.5 rounded bg-[rgba(251,191,36,.08)] text-[var(--am)]">jenkins</span>
-                <span class="px-2 py-0.5 rounded bg-[rgba(34,211,238,.08)] text-[var(--cy)]">Python</span>
-              </div>
             </div>
           </div>
 
@@ -1083,9 +1076,11 @@
     const el = $('#feed'); if (!el) return;
     const LINES = [
       '▸ <span class="text-[var(--tx)]">shayal vaghasiya</span> — devops / build &amp; release engineer',
-      '▸ availability: <span class="text-[var(--em)] font-bold">● OPEN TO WORK</span> — hireable now',
-      '▸ experience: <span class="text-[var(--cy)]">wipro → nxp semiconductors</span>',
-      '▸ socials: <a href="https://github.com/shayalvaghasiya" target="_blank" rel="noopener noreferrer" class="text-[var(--cy)] hover:underline">github</a> · <a href="https://linkedin.com/in/shayalvaghasiya" target="_blank" rel="noopener noreferrer" class="text-[var(--vi)] hover:underline">linkedin</a> · <a href="mailto:shayalvaghasiya@gmail.com" class="text-[var(--em)] hover:underline">email</a>',
+      '▸ experience: <span class="text-[var(--rs)] font-bold">2 years</span> across <span class="text-[var(--em)]">Wipro</span> &amp; <span class="text-[var(--em)]">NXP Semiconductors</span>',
+      '▸ skills: <span class="text-[var(--cy)]">Python · Jenkins · Docker · Terraform</span>',
+      '▸ projects: <span class="text-[var(--vi)]">5+</span> DevOps projects',
+      '▸ availability: <span class="text-[var(--em)] font-bold">● open to DevOps opportunities</span>',
+      '▸ socials: <a href="https://github.com/shayalvaghasiya" target="_blank" rel="noopener noreferrer" class="text-[var(--cy)] hover:underline">github</a> · <a href="https://linkedin.com/in/shayalvaghasiya" target="_blank" rel="noopener noreferrer" class="text-[var(--vi)] hover:underline">linkedin</a> · <a href="mailto:shayalvaghasiya@gmail.com" class="text-[var(--am)] hover:underline">email</a>',
     ];
     el.innerHTML = '';
     const frag = document.createDocumentFragment();
